@@ -1,94 +1,198 @@
-﻿using System.Collections;
+using System;
+using System.Diagnostics;
+
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
 public class Drag : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHandler
 {
-
-	public bool onField;
+	public int cardspCaC = 0;
+	public int cardspArq = 0;
+	public int cardspAsd = 0;
+	public int cardszCaC = 0;
+	public int cardszArq = 0;
+	public int cardszAsd = 0;
+	public bool aum;
+	public bool weatherCaC;
+	public bool weatherArq;
+	public bool weatherAsd;
+	public Effects efectos;
+	public bool CanDrawZombies;
+	public bool CanDrawPlants;
+	public bool onField = false;
 
 	public bool isOverDropZone;
-	
+
 	GameObject playerDropZone;
-	
+
 	public GameObject canvas;
+	public turns endturn;
+	// public Effects aumento;
 
 	public Vector2 startPosition;
 	public GameObject startParent;
 	GameObject hand;
+	public string a = "aumento";
+	public string r = "robar";
+	public string deleteMax = "deleteMax";
+	public string deleteMin = "deleteMin";
+	public string climaCaC = "climaCaC";
+	public string climaArq = "climaArq";
+	public string climaAsd = "climaAsd";
+	public string despeje = "despeje";
+	public string robarZombies = "robarZombies";
+	public string robarPlantas = "robarPlants";
+	public string multiply = "multiply";
 
-	void Start ()
+
+	void Start()
 	{
 		canvas = GameObject.Find("Canvas");
 		hand = gameObject.transform.parent.gameObject;
 		playerDropZone = hand;
+
 	}
 
 
 	public void OnBeginDrag(PointerEventData eventData)
 	{
-		Debug.Log("aaaaaaa");
+
 		startPosition = transform.position;
 		startParent = transform.parent.gameObject;
 	}
-	
-	public void OnDrag (PointerEventData eventData)
+
+	public void OnDrag(PointerEventData eventData)
 	{
 		if (!onField)
 		{
 			this.transform.position = eventData.position;
 			transform.SetParent(canvas.transform);
 		}
-		
+
 	}
-	
+
 	private void OnCollisionEnter2D(Collision2D collision)
 	{
-		Debug.Log("Enter");
-        isOverDropZone = true;
+
+		isOverDropZone = true;
 		playerDropZone = collision.gameObject;
 	}
 	private void OnCollisionExit2D(Collision2D collision)
 	{
-		Debug.Log("Exit");
-        isOverDropZone = false;
+
+		isOverDropZone = false;
 	}
 	public void OnEndDrag(PointerEventData eventData)
 	{
-		Debug.Log("EndDrag");
-		if (isOverDropZone && Rodri())
+
+		if (isOverDropZone && Correctzone() && !onField)
 		{
-			
-			Debug.Log("OverDropZone");
-
 			transform.SetParent(playerDropZone.transform, false);
-
 			onField = true;
+			UnityEngine.Debug.Log("on field");
+			CardDisplay cardDisplay = gameObject.GetComponent<CardDisplay>();
+			efectos = GameObject.Find("efectos").GetComponent<Effects>();
+			string effect = cardDisplay.efecto;
+			string faction = cardDisplay.faction;
+			Draw draw = GameObject.Find("Deck").GetComponent<Draw>();
+			endturn = GameObject.Find("TurnSystem").GetComponent<turns>();
+
+
+			if (effect == deleteMax)
+			{
+				UnityEngine.Debug.Log("efecto atleta");
+				efectos.DeleteMaxPlantcard();
+
+			}
+			else if (effect == deleteMin)
+			{
+				efectos.DeleteMinZombiecard();
+			}
+			else if (effect == climaCaC || weatherCaC == true)
+			{
+				weatherCaC = true;
+				efectos.WeatherCaC();
+
+			}
+			else if (effect == climaArq || weatherArq == true)
+			{
+				weatherArq = true;
+				efectos.WeatherArq();
+
+			}
+			else if (effect == climaAsd || weatherAsd == true)
+			{
+				weatherAsd = true;
+				efectos.WeatherAsd();
+
+			}
+			else if (effect == a || aum == true)
+			{
+				aum = true;
+				efectos.Aumento();
+
+			}
+			else if (effect == despeje)
+			{
+				efectos.Despeje();
+				weatherArq = false;
+				weatherAsd = false;
+				weatherCaC = false;
+			}
+			else if (effect == robarPlantas)
+			{
+				efectos.RobarPlants();
+				UnityEngine.Debug.Log("robar plantas");
+			}
+			else if (effect == robarZombies)
+			{
+				efectos.RobarZombies();
+				UnityEngine.Debug.Log("robar zombies");
+			}
+			else if (effect == multiply)
+			{
+				UnityEngine.Debug.Log("multiplico");
+				efectos.Multiply();
+
+			}
+
+
+			endturn.EndTurn();
+
+
+
+
+
 		}
 		else
 		{
-			Debug.Log("Restart");
+
 			transform.position = startPosition;
 			transform.SetParent(startParent.transform, false);
-			
+
 		}
-	}	
-	public bool Rodri ()
+	}
+
+	public bool Correctzone()
 	{
 		Zones conditions = playerDropZone.GetComponent<Zones>();
-		string k = conditions.zoneNames;
+		string p = conditions.zoneNames;
 		string l = gameObject.GetComponent<CardDisplay>().zone;
 		string a = gameObject.GetComponent<CardDisplay>().zoneaux;
-		
-		if (k == l || k == a)
+		string w = gameObject.GetComponent<CardDisplay>().zonextra;
+
+		if (p == l || p == a || p == w)
 		{
-		  return true;
-		} 
+			return true;
+		}
 		else
 		{
 			return false;
 		}
-	     
+
 	}
+
 }
+

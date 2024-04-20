@@ -1,28 +1,43 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class CardDisplay : MonoBehaviour 
+public class CardDisplay : MonoBehaviour
 {
+  public string faction;
+  public int power;
+  public string efecto;
   public string zone;
   public Card card;
   public Text nameText;
   public Text descriptionText;
-  public Image plantImageImage;
-  public Text powerText;	
+  public Image plantbckgrImage;
+  public Text powerText;
   public string zoneaux;
- 
-	void Start () 
-	{
+  public Image plantimage;
+  public Image kind;
+  public string zonextra;
+  public int ogpower;
+  public string name;
+  void Start()
+  {
+    name = card.name;
+    ogpower = card.ogpower;
+    faction = card.faction;
+    efecto = card.efecto;
+    power = card.power;
+    zonextra = card.zonextra;
     zoneaux = card.zoneaux;
     zone = card.zone;
-		nameText.text = card.name;
+    nameText.text = card.name;
     descriptionText.text = card.description;
-    plantImageImage.sprite = card.plantImage;
-		powerText.text = card.power.ToString();
-	}
-	
+    plantbckgrImage.sprite = card.plantbckgrImage;
+    powerText.text = card.power.ToString();
+    plantimage.sprite = card.plantimage;
+    kind.sprite = card.kind;
+  }
+
   /*public bool CanPlayCard (bool faction, char zone)
   {
     if (cardFaction == faction && cardZone == zone)
@@ -30,5 +45,5 @@ public class CardDisplay : MonoBehaviour
     else
       return false;
   }*/
-	
+
 }

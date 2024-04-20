@@ -31,6 +31,8 @@ public class turns : MonoBehaviour
 	public GameObject enemyAsd;
 	public GameObject enemyArq;
 	public bool cardPlayed;
+	public DeleteCards timep;
+	public DeleteCards timez;
 	void Start()
 	{
 		EndTurn();
@@ -38,6 +40,7 @@ public class turns : MonoBehaviour
 
 	public void EndTurn()
 	{
+
 
 		if (!Round)
 		{
@@ -61,6 +64,14 @@ public class turns : MonoBehaviour
 			UnityEngine.Debug.Log("Turno 2");
 
 		}
+		timep = GameObject.Find("Button1").GetComponent<DeleteCards>();
+		timez = GameObject.Find("Button2").GetComponent<DeleteCards>();
+		timep.tradingTime = true;
+		timez.tradingTime = true;
+		timez.Hide();
+		Movable(playerhand, false);
+		Movable(enemyhand, false);
+
 	}
 
 	public void Visibility1(GameObject playerhand, bool visible)
@@ -191,6 +202,14 @@ public class turns : MonoBehaviour
 		{
 			GameObject card = child.gameObject;
 			card.transform.SetParent(cementery.transform, false);
+		}
+	}
+	public void Movable(GameObject hand, bool movable)
+	{
+		Drag[] cards = hand.GetComponentsInChildren<Drag>();
+		foreach (Drag card in cards)
+		{
+			card.enabled = movable;
 		}
 	}
 }

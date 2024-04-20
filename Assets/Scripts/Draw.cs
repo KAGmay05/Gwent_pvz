@@ -197,26 +197,26 @@ public class Draw : MonoBehaviour
       enemycards.RemoveAt(RandomIndex);
     }
   }
-  public void OnClickPlants()
-  {
-    turns turns = GameObject.Find("TurnSystem").GetComponent<turns>();
+  // public void OnClickPlants()
+  // {
+  //   turns turns = GameObject.Find("TurnSystem").GetComponent<turns>();
 
-    if (clickCount == 3)
-    {
-      turns.cardPlayed = true;
+  //   if (clickCount == 3)
+  //   {
+  //     turns.cardPlayed = true;
 
-    }
-    if (turns.cardPlayed == false)
-    {
-      int RandomIndex = Random.Range(0, cards.Count);
-      GameObject playerCard1 = Instantiate(cards[RandomIndex], new Vector3(0, 0, 0), Quaternion.identity);
-      playerCard1.transform.SetParent(PlayerArea.transform, false);
-      cards.RemoveAt(RandomIndex);
-    }
-  }
+  //   }
+  //   if (turns.cardPlayed == false)
+  //   {
+  //     int RandomIndex = Random.Range(0, cards.Count);
+  //     GameObject playerCard1 = Instantiate(cards[RandomIndex], new Vector3(0, 0, 0), Quaternion.identity);
+  //     playerCard1.transform.SetParent(PlayerArea.transform, false);
+  //     cards.RemoveAt(RandomIndex);
+  //   }
+  // }
 
 
-  public void OnClick()
+  public void Draw1Card()
   {
 
     int RandomIndex = Random.Range(0, cards.Count);
@@ -225,18 +225,28 @@ public class Draw : MonoBehaviour
     cards.RemoveAt(RandomIndex);
 
   }
-  public Button plants;
-  public int clickCount = 0;
-  void Update()
+  public void Draw1Zombies()
   {
-    if (Input.GetMouseButtonDown(0))
-    {
-      RectTransform buttonRectTransform = plants.GetComponent<RectTransform>();
-      if (RectTransformUtility.RectangleContainsScreenPoint(buttonRectTransform, Input.mousePosition))
-        clickCount++;
-    }
+
+    int RandomIndex = Random.Range(0, enemycards.Count);
+    GameObject playerCard1 = Instantiate(enemycards[RandomIndex], new Vector3(0, 0, 0), Quaternion.identity);
+    playerCard1.transform.SetParent(PlayerArea.transform, false);
+    enemycards.RemoveAt(RandomIndex);
 
   }
+
+  // public Button plants;
+  // public int clickCount = 0;
+  // void Update()
+  // {
+  //   if (Input.GetMouseButtonDown(0))
+  //   {
+  //     RectTransform buttonRectTransform = plants.GetComponent<RectTransform>();
+  //     if (RectTransformUtility.RectangleContainsScreenPoint(buttonRectTransform, Input.mousePosition))
+  //       clickCount++;
+  //   }
+
+  // }
 
 }
 

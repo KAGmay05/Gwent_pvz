@@ -1,3 +1,4 @@
+using System.Globalization;
 using System;
 using System.Diagnostics;
 
@@ -244,6 +245,66 @@ public class Drag : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHand
 				señuelo.decoytime = false;
 				onField = false;
 				señuelo.EndTurn();
+
+			}
+		}
+	}
+	public void TradingCards()
+	{
+		Draw draw = GameObject.Find("Deck").GetComponent<Draw>();
+		turns endturn = GameObject.Find("TurnSystem").GetComponent<turns>();
+		CardDisplay cardDisplay = GetComponent<CardDisplay>();
+		if (endturn.isPlayerTurn)
+		{
+			UnityEngine.Debug.Log("paso por el primer if");
+			DeleteCards button1 = GameObject.Find("Button1").GetComponent<DeleteCards>();
+			GameObject hand = GameObject.Find("PlayerArea");
+			if (button1.tradingTime)
+			{
+				UnityEngine.Debug.Log("paso por el segundo if");
+				Draw deck = GameObject.Find("Deck").GetComponent<Draw>();
+				List<GameObject> deckcards = deck.cards;
+				if (cardDisplay.faction == "plantas")
+				{
+					UnityEngine.Debug.Log("paso por el tercer if");
+					deckcards.Add(gameObject);
+					draw.Draw1Card();
+					Destroy(gameObject);
+					button1.counter++;
+					if (button1.counter == 2)
+					{
+						UnityEngine.Debug.Log("paso por el cuarto if");
+						endturn.Movable(hand, true);
+						button1.tradingTime = false;
+						button1.Hide();
+					}
+
+				}
+
+			}
+		}
+		else if (!endturn.isPlayerTurn)
+		{
+			DeleteCards button1 = GameObject.Find("Button2").GetComponent<DeleteCards>();
+			GameObject hand = GameObject.Find("EnemyArea");
+			if (button1.tradingTime)
+			{
+				Draw deck = GameObject.Find("Deck").GetComponent<Draw>();
+				List<GameObject> deckcards = deck.enemycards;
+				if (cardDisplay.faction == "zombies")
+				{
+					deckcards.Add(gameObject);
+					draw.Draw1Zombies();
+					Destroy(gameObject);
+					button1.counter++;
+					if (button1.counter == 2)
+					{
+						endturn.Movable(hand, true);
+						button1.tradingTime = false;
+						button1.Hide();
+					}
+
+				}
 
 			}
 		}

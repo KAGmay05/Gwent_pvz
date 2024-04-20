@@ -26,5 +26,12 @@ public class DeleteCards : MonoBehaviour
 		canvasGroup.interactable = false;
 		canvasGroup.blocksRaycasts = false;
 	}
+	public void Show()
+	{
+		CanvasGroup canvasGroup = button.GetComponent<CanvasGroup>();
+		canvasGroup.alpha = 1;
+		canvasGroup.interactable = true;
+		canvasGroup.blocksRaycasts = true;
+	}
 
 }

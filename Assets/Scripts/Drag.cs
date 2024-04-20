@@ -123,6 +123,7 @@ public class Drag : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHand
 			else if (effect == climaArq || weatherArq == true)
 			{
 				weatherArq = true;
+				UnityEngine.Debug.Log("se pone true");
 				efectos.WeatherArq();
 
 			}
@@ -258,6 +259,7 @@ public class Drag : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHand
 		{
 			UnityEngine.Debug.Log("paso por el primer if");
 			DeleteCards button1 = GameObject.Find("Button1").GetComponent<DeleteCards>();
+			DeleteCards button2 = GameObject.Find("Button2").GetComponent<DeleteCards>();
 			GameObject hand = GameObject.Find("PlayerArea");
 			if (button1.tradingTime)
 			{
@@ -277,20 +279,20 @@ public class Drag : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHand
 						endturn.Movable(hand, true);
 						button1.tradingTime = false;
 						button1.Hide();
+
 					}
 
 				}
 
 			}
+
 		}
 		else if (!endturn.isPlayerTurn)
 		{
 
+			UnityEngine.Debug.Log("esta en el else if zombies");
 			DeleteCards button1 = GameObject.Find("Button2").GetComponent<DeleteCards>();
-			CanvasGroup canvasGroup = button1.GetComponent<CanvasGroup>();
-			canvasGroup.alpha = 0;
-			canvasGroup.interactable = false;
-			canvasGroup.blocksRaycasts = false;
+
 			GameObject hand = GameObject.Find("EnemyArea");
 			UnityEngine.Debug.Log("paso por el primer if zombies");
 			if (button1.tradingTime)

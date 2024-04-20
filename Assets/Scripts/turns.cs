@@ -35,6 +35,13 @@ public class turns : MonoBehaviour
 	public DeleteCards timez;
 	void Start()
 	{
+		timep = GameObject.Find("Button1").GetComponent<DeleteCards>();
+		timez = GameObject.Find("Button2").GetComponent<DeleteCards>();
+		timep.tradingTime = true;
+		timez.tradingTime = true;
+
+		Movable(playerhand, false);
+		Movable(enemyhand, false);
 		EndTurn();
 	}
 
@@ -53,6 +60,7 @@ public class turns : MonoBehaviour
 			Visibility1(playerhand, true);
 			Visibility1(enemyhand, false);
 			UnityEngine.Debug.Log("Turno 1");
+			timez.tradingTime = false;
 
 		}
 		else if (!isPlayerTurn)
@@ -62,15 +70,12 @@ public class turns : MonoBehaviour
 			cardPlayed = true;
 			UnityEngine.Debug.Log("se convierte en true");
 			UnityEngine.Debug.Log("Turno 2");
+			timep.tradingTime = false;
+			timez.tradingTime = true;
+
 
 		}
-		timep = GameObject.Find("Button1").GetComponent<DeleteCards>();
-		timez = GameObject.Find("Button2").GetComponent<DeleteCards>();
-		timep.tradingTime = true;
-		timez.tradingTime = true;
-		timez.Hide();
-		Movable(playerhand, false);
-		Movable(enemyhand, false);
+
 
 	}
 

@@ -33,33 +33,7 @@ public class GameManager : MonoBehaviour
 	public bool zombieWin;
 	public bool plantWin;
 	public bool tie;
-	// List<GameObject> playerCaCcards = new List<GameObject>();
-	// List<GameObject> cards = new List<GameObject>();
-	// List<GameObject> cards = new List<GameObject>();
-	// List<GameObject> cards = new List<GameObject>();
-	// List<GameObject> cards = new List<GameObject>();
-	// List<GameObject> cards = new List<GameObject>();
-	// public void Card()
-	// {
-	// 	foreach (Transform zone in playerArea.transform)
-	// 	{
-	// 		cardPlayer += TimeZone.transform.childCount;
-	// 		UnityEngine.Debug.Log(cardPlayer);
-	// 	}
-	// 	int CardInZone = 0;
-	// 	foreach (GameObject zone in deckZone)
-	// 	{
-	// 		cardInZone += zone.transform.childCount;
-	// 	}
-	// 	if (cardDropZone == 1 && cardPlayer == 9 && cardInZone == 0)
-	// 	{
-	// 		foreach (Transform child in dropzone.transform)
-	// 		{
-	// 			GameObject card = ChildrenEnumerator.gameObject;
 
-	// 		}
-	// 	}
-	// }
 
 	void Update()
 	{
@@ -90,7 +64,10 @@ public class GameManager : MonoBehaviour
 		foreach (var card in cardsAsd)
 		{
 			if (cardsAsd != null)
-			{ Asdpoints += card.power; }
+			{
+				Asdpoints += card.power;
+				UnityEngine.Debug.Log("puntos de Asd es" + Asdpoints);
+			}
 		}
 		totalPlantspoints = CaCpoints + Arqpoints + Asdpoints;
 		plantspoints.text = totalPlantspoints.ToString();
@@ -116,6 +93,7 @@ public class GameManager : MonoBehaviour
 		foreach (var card in enemycardsAsd)
 		{
 			enemyAsdpoints += card.power;
+
 		}
 		totalZombiespoints = enemyCaCpoints + enemyArqpoints + enemyAsdpoints;
 		zombiespoints.text = totalZombiespoints.ToString();
@@ -201,4 +179,5 @@ public class GameManager : MonoBehaviour
 		}
 
 	}
+
 }

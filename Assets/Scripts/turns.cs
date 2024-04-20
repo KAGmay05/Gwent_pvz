@@ -9,6 +9,7 @@ using UnityEngine;
 public class turns : MonoBehaviour
 {
 
+	public GameObject aum;
 	public bool decoytime;
 	public bool factionp;
 	public bool factionz;
@@ -60,7 +61,7 @@ public class turns : MonoBehaviour
 			Visibility1(playerhand, true);
 			Visibility1(enemyhand, false);
 			UnityEngine.Debug.Log("Turno 1");
-			timez.tradingTime = false;
+
 
 		}
 		else if (!isPlayerTurn)
@@ -70,8 +71,7 @@ public class turns : MonoBehaviour
 			cardPlayed = true;
 			UnityEngine.Debug.Log("se convierte en true");
 			UnityEngine.Debug.Log("Turno 2");
-			timep.tradingTime = false;
-			timez.tradingTime = true;
+
 
 
 		}
@@ -173,37 +173,50 @@ public class turns : MonoBehaviour
 
 	public void Deletecards()
 	{
-		foreach (Transform child in playerCaC.transform)
+		CardDisplay[] cardsCaC = playerCaC.GetComponentsInChildren<CardDisplay>();
+		foreach (var card in cardsCaC)
 		{
-			GameObject card = child.gameObject;
+			card.transform.SetParent(cementery.transform, false);
+
+		}
+		CardDisplay[] cardsArq = playerArq.GetComponentsInChildren<CardDisplay>();
+		foreach (var card in cardsArq)
+		{
+
 			card.transform.SetParent(cementery.transform, false);
 		}
-		foreach (Transform child in playerArq.transform)
+		CardDisplay[] cardsAsd = playerAsd.GetComponentsInChildren<CardDisplay>();
+		foreach (var card in cardsAsd)
 		{
-			GameObject card = child.gameObject;
+
 			card.transform.SetParent(cementery.transform, false);
 		}
-		foreach (Transform child in playerAsd.transform)
+		CardDisplay[] cardsZombiesCaC = playerCaC.GetComponentsInChildren<CardDisplay>();
+		foreach (var card in cardsZombiesCaC)
 		{
-			GameObject card = child.gameObject;
+
 			card.transform.SetParent(cementery.transform, false);
 		}
-		foreach (Transform child in enemyArq.transform)
+		CardDisplay[] cardsZombiesAsd = enemyAsd.GetComponentsInChildren<CardDisplay>();
+		foreach (var card in cardsZombiesAsd)
 		{
-			GameObject card = child.gameObject;
+
 			card.transform.SetParent(cementery.transform, false);
 		}
-		foreach (Transform child in enemyAsd.transform)
+		CardDisplay[] cardsZombiesArq = enemyArq.GetComponentsInChildren<CardDisplay>();
+		foreach (var card in cardsZombiesArq)
 		{
-			GameObject card = child.gameObject;
+
 			card.transform.SetParent(cementery.transform, false);
 		}
-		foreach (Transform child in enemyCaC.transform)
+		CardDisplay[] cardsclima = clima.GetComponentsInChildren<CardDisplay>();
+		foreach (var card in cardsclima)
 		{
-			GameObject card = child.gameObject;
+
 			card.transform.SetParent(cementery.transform, false);
 		}
-		foreach (Transform child in clima.transform)
+
+		foreach (Transform child in aum.transform)
 		{
 			GameObject card = child.gameObject;
 			card.transform.SetParent(cementery.transform, false);

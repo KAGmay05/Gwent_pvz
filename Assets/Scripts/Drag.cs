@@ -33,6 +33,7 @@ public class Drag : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHand
 	public turns endturn;
 	// public Effects aumento;
 
+	public GameObject aumCaC;
 	public Vector2 startPosition;
 	public GameObject startParent;
 	GameObject hand;
@@ -102,8 +103,8 @@ public class Drag : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHand
 			string faction = cardDisplay.faction;
 			Draw draw = GameObject.Find("Deck").GetComponent<Draw>();
 			endturn = GameObject.Find("TurnSystem").GetComponent<turns>();
-
-
+			Checking checking = GameObject.Find("checking").GetComponent<Checking>();
+			checking.CheckingEffects();
 			if (effect == deleteMax)
 			{
 				UnityEngine.Debug.Log("efecto atleta");
@@ -123,7 +124,7 @@ public class Drag : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHand
 			else if (effect == climaArq || weatherArq == true)
 			{
 				weatherArq = true;
-				UnityEngine.Debug.Log("se pone true");
+				UnityEngine.Debug.Log("se pone true el weather Arq");
 				efectos.WeatherArq();
 
 			}
@@ -133,12 +134,13 @@ public class Drag : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHand
 				efectos.WeatherAsd();
 
 			}
-			else if (effect == a || aum == true)
+			else if (effect == a)
 			{
 				aum = true;
 				efectos.Aumento();
 
 			}
+
 			else if (effect == despeje)
 			{
 				efectos.Despeje();
@@ -162,6 +164,13 @@ public class Drag : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHand
 				efectos.Multiply();
 
 			}
+			else if (effect == "promedio")
+			{
+				UnityEngine.Debug.Log("promedio");
+				efectos.Promedio();
+			}
+
+
 			turns señuelo = GameObject.Find("TurnSystem").GetComponent<turns>();
 			if (effect == "señuelo")
 			{
@@ -226,6 +235,7 @@ public class Drag : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHand
 			UnityEngine.Debug.Log("esta en el primer if de on click");
 			if (cardDisplay.faction == "plantas")
 			{
+				UnityEngine.Debug.Log("esta en el segundo if de on click");
 				GameObject zone1 = GameObject.Find("PlayerArea");
 				cardDisplay.power = cardDisplay.ogpower;
 				transform.position = zone1.transform.position;
@@ -257,25 +267,25 @@ public class Drag : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHand
 		CardDisplay cardDisplay = GetComponent<CardDisplay>();
 		if (endturn.isPlayerTurn)
 		{
-			UnityEngine.Debug.Log("paso por el primer if");
+
 			DeleteCards button1 = GameObject.Find("Button1").GetComponent<DeleteCards>();
 			DeleteCards button2 = GameObject.Find("Button2").GetComponent<DeleteCards>();
 			GameObject hand = GameObject.Find("PlayerArea");
 			if (button1.tradingTime)
 			{
-				UnityEngine.Debug.Log("paso por el segundo if");
+
 				Draw deck = GameObject.Find("Deck").GetComponent<Draw>();
 				List<GameObject> deckcards = deck.cards;
 				if (cardDisplay.faction == "plantas")
 				{
-					UnityEngine.Debug.Log("paso por el tercer if");
+
 					deckcards.Add(gameObject);
 					draw.Draw1Card();
 					Destroy(gameObject);
 					button1.counter++;
 					if (button1.counter == 2)
 					{
-						UnityEngine.Debug.Log("paso por el cuarto if");
+
 						endturn.Movable(hand, true);
 						button1.tradingTime = false;
 						button1.Hide();
@@ -291,11 +301,11 @@ public class Drag : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHand
 		{
 
 			UnityEngine.Debug.Log("esta en el else if zombies");
-			DeleteCards button1 = GameObject.Find("Button2").GetComponent<DeleteCards>();
+			DeleteCards button2 = GameObject.Find("Button2").GetComponent<DeleteCards>();
 
 			GameObject hand = GameObject.Find("EnemyArea");
 			UnityEngine.Debug.Log("paso por el primer if zombies");
-			if (button1.tradingTime)
+			if (button2.tradingTime && button2.counter < 3)
 			{
 				UnityEngine.Debug.Log("paso por el segundo if zombies");
 				Draw deck = GameObject.Find("Deck").GetComponent<Draw>();
@@ -306,12 +316,12 @@ public class Drag : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHand
 					deckcards.Add(gameObject);
 					deck.Draw1Zombies();
 					Destroy(gameObject);
-					button1.counter++;
-					if (button1.counter == 2)
+					button2.counter++;
+					if (button2.counter == 2)
 					{
 						endturn.Movable(hand, true);
-						button1.tradingTime = false;
-						button1.Hide();
+						button2.tradingTime = false;
+						button2.Hide();
 					}
 
 				}

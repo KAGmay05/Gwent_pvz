@@ -230,7 +230,7 @@ public class Draw : MonoBehaviour
 
     int RandomIndex = Random.Range(0, enemycards.Count);
     GameObject playerCard1 = Instantiate(enemycards[RandomIndex], new Vector3(0, 0, 0), Quaternion.identity);
-    playerCard1.transform.SetParent(PlayerArea.transform, false);
+    playerCard1.transform.SetParent(EnemyArea.transform, false);
     enemycards.RemoveAt(RandomIndex);
 
   }

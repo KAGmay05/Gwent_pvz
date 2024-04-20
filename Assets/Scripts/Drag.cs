@@ -285,16 +285,24 @@ public class Drag : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHand
 		}
 		else if (!endturn.isPlayerTurn)
 		{
+
 			DeleteCards button1 = GameObject.Find("Button2").GetComponent<DeleteCards>();
+			CanvasGroup canvasGroup = button1.GetComponent<CanvasGroup>();
+			canvasGroup.alpha = 0;
+			canvasGroup.interactable = false;
+			canvasGroup.blocksRaycasts = false;
 			GameObject hand = GameObject.Find("EnemyArea");
+			UnityEngine.Debug.Log("paso por el primer if zombies");
 			if (button1.tradingTime)
 			{
+				UnityEngine.Debug.Log("paso por el segundo if zombies");
 				Draw deck = GameObject.Find("Deck").GetComponent<Draw>();
 				List<GameObject> deckcards = deck.enemycards;
 				if (cardDisplay.faction == "zombies")
 				{
+					UnityEngine.Debug.Log("paso por el tercer if zombies");
 					deckcards.Add(gameObject);
-					draw.Draw1Zombies();
+					deck.Draw1Zombies();
 					Destroy(gameObject);
 					button1.counter++;
 					if (button1.counter == 2)

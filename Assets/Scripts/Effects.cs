@@ -514,14 +514,14 @@ public class Effects : MonoBehaviour
     }
     public void Promedio()
     {
-        int plantsCaC;
-        int plantsAsd;
-        int plantsArq;
-        int zombiesCaC;
-        int zombiesArq;
-        int zombiesAsd;
-        int totalPlants;
-        int totalzombies;
+        int plantsCaC = 0;
+        int plantsAsd = 0;
+        int plantsArq = 0;
+        int zombiesCaC = 0;
+        int zombiesArq = 0;
+        int zombiesAsd = 0;
+        int totalPlants = 0;
+        int totalzombies = 0;
 
         CardDisplay[] cardsCaC = playerCaC.GetComponentsInChildren<CardDisplay>();
         foreach (var card in cardsCaC)
@@ -564,8 +564,8 @@ public class Effects : MonoBehaviour
         totalPlants = plantsArq + plantsAsd + plantsCaC;
         totalzombies = zombiesArq + zombiesAsd + zombiesCaC;
         GameManager gameManager = GameObject.Find("GameManager").GetComponent<GameManager>();
-        int pPoints = gameManager.totalPlantspointsplantspoints;
-        int zPoints = gameManager.totalzombiespoints;
+        int pPoints = gameManager.totalPlantspoints;
+        int zPoints = gameManager.totalZombiespoints;
 
         int newpowerPlants = pPoints / totalPlants;
         int newpowerZombies = zPoints / totalzombies;

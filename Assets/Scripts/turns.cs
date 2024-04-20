@@ -9,6 +9,9 @@ using UnityEngine;
 public class turns : MonoBehaviour
 {
 
+	public bool decoytime;
+	public bool factionp;
+	public bool factionz;
 	public GameObject clima;
 	public Text results;
 	public bool isPlayerTurn;

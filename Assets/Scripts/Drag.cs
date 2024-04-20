@@ -8,6 +8,7 @@ using UnityEngine.EventSystems;
 
 public class Drag : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHandler
 {
+	public bool cardPlayed;
 	public int cardspCaC = 0;
 	public int cardspArq = 0;
 	public int cardspAsd = 0;
@@ -45,6 +46,7 @@ public class Drag : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHand
 	public string robarZombies = "robarZombies";
 	public string robarPlantas = "robarPlants";
 	public string multiply = "multiply";
+	public string decoy = "señuelo";
 
 
 	void Start()
@@ -89,6 +91,7 @@ public class Drag : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHand
 
 		if (isOverDropZone && Correctzone() && !onField)
 		{
+
 			transform.SetParent(playerDropZone.transform, false);
 			onField = true;
 			UnityEngine.Debug.Log("on field");
@@ -157,9 +160,28 @@ public class Drag : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHand
 				efectos.Multiply();
 
 			}
+			turns señuelo = GameObject.Find("TurnSystem").GetComponent<turns>();
+			if (effect == "señuelo")
+			{
+				UnityEngine.Debug.Log("efecto decoy");
 
+				señuelo.decoytime = true;
+				if (cardDisplay.GetComponent<CardDisplay>().faction == "plantas")
+				{
+					señuelo.factionp = true;
+					UnityEngine.Debug.Log("entro a faction == planras");
+				}
+				else
+				{
+					señuelo.factionz = true;
+				}
+			}
 
-			endturn.EndTurn();
+			if (señuelo.decoytime == false)
+			{
+				endturn.EndTurn();
+			}
+
 
 
 
@@ -192,6 +214,39 @@ public class Drag : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHand
 			return false;
 		}
 
+	}
+	public void OnClick()
+	{
+		CardDisplay cardDisplay = GetComponent<CardDisplay>();
+		turns señuelo = GameObject.Find("TurnSystem").GetComponent<turns>();
+		if (señuelo.decoytime && señuelo.factionp)
+		{
+			UnityEngine.Debug.Log("esta en el primer if de on click");
+			if (cardDisplay.faction == "plantas")
+			{
+				GameObject zone1 = GameObject.Find("PlayerArea");
+				cardDisplay.power = cardDisplay.ogpower;
+				transform.position = zone1.transform.position;
+				transform.SetParent(zone1.transform, false);
+				señuelo.decoytime = false;
+				onField = false;
+				señuelo.EndTurn();
+			}
+		}
+		else if (señuelo.decoytime && señuelo.factionz)
+		{
+			if (cardDisplay.faction == "zombies")
+			{
+				GameObject zone1 = GameObject.Find("EnemyArea");
+				cardDisplay.power = cardDisplay.ogpower;
+				transform.position = zone1.transform.position;
+				transform.SetParent(zone1.transform, false);
+				señuelo.decoytime = false;
+				onField = false;
+				señuelo.EndTurn();
+
+			}
+		}
 	}
 
 }

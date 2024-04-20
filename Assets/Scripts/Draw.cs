@@ -200,6 +200,7 @@ public class Draw : MonoBehaviour
   public void OnClickPlants()
   {
     turns turns = GameObject.Find("TurnSystem").GetComponent<turns>();
+
     if (clickCount == 3)
     {
       turns.cardPlayed = true;

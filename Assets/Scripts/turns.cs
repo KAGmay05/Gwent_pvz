@@ -61,6 +61,10 @@ public class turns : MonoBehaviour
 			Visibility1(playerhand, true);
 			Visibility1(enemyhand, false);
 			UnityEngine.Debug.Log("Turno 1");
+			Checking checking = GameObject.Find("checking").GetComponent<Checking>();
+
+			checking.CheckingEffects();
+			UnityEngine.Debug.Log("esta comprobando");
 
 
 		}
@@ -71,6 +75,10 @@ public class turns : MonoBehaviour
 			cardPlayed = true;
 			UnityEngine.Debug.Log("se convierte en true");
 			UnityEngine.Debug.Log("Turno 2");
+			Checking checking = GameObject.Find("checking").GetComponent<Checking>();
+
+			checking.CheckingEffects();
+			UnityEngine.Debug.Log("esta comprobando");
 
 
 

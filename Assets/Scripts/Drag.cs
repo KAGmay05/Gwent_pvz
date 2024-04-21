@@ -103,8 +103,11 @@ public class Drag : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHand
 			string faction = cardDisplay.faction;
 			Draw draw = GameObject.Find("Deck").GetComponent<Draw>();
 			endturn = GameObject.Find("TurnSystem").GetComponent<turns>();
-			Checking checking = GameObject.Find("checking").GetComponent<Checking>();
-			checking.CheckingEffects();
+
+
+			// checking.CheckingEffects();
+			// UnityEngine.Debug.Log("esta comprobando");
+
 			if (effect == deleteMax)
 			{
 				UnityEngine.Debug.Log("efecto atleta");
@@ -124,7 +127,7 @@ public class Drag : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHand
 			else if (effect == climaArq || weatherArq == true)
 			{
 				weatherArq = true;
-				UnityEngine.Debug.Log("se pone true el weather Arq");
+
 				efectos.WeatherArq();
 
 			}
@@ -232,10 +235,10 @@ public class Drag : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHand
 		turns señuelo = GameObject.Find("TurnSystem").GetComponent<turns>();
 		if (señuelo.decoytime && señuelo.factionp)
 		{
-			UnityEngine.Debug.Log("esta en el primer if de on click");
+
 			if (cardDisplay.faction == "plantas")
 			{
-				UnityEngine.Debug.Log("esta en el segundo if de on click");
+
 				GameObject zone1 = GameObject.Find("PlayerArea");
 				cardDisplay.power = cardDisplay.ogpower;
 				transform.position = zone1.transform.position;
@@ -300,19 +303,19 @@ public class Drag : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHand
 		else if (!endturn.isPlayerTurn)
 		{
 
-			UnityEngine.Debug.Log("esta en el else if zombies");
+
 			DeleteCards button2 = GameObject.Find("Button2").GetComponent<DeleteCards>();
 
 			GameObject hand = GameObject.Find("EnemyArea");
-			UnityEngine.Debug.Log("paso por el primer if zombies");
+
 			if (button2.tradingTime && button2.counter < 3)
 			{
-				UnityEngine.Debug.Log("paso por el segundo if zombies");
+
 				Draw deck = GameObject.Find("Deck").GetComponent<Draw>();
 				List<GameObject> deckcards = deck.enemycards;
 				if (cardDisplay.faction == "zombies")
 				{
-					UnityEngine.Debug.Log("paso por el tercer if zombies");
+
 					deckcards.Add(gameObject);
 					deck.Draw1Zombies();
 					Destroy(gameObject);

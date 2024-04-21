@@ -66,7 +66,7 @@ public class GameManager : MonoBehaviour
 			if (cardsAsd != null)
 			{
 				Asdpoints += card.power;
-				UnityEngine.Debug.Log("puntos de Asd es" + Asdpoints);
+
 			}
 		}
 		totalPlantspoints = CaCpoints + Arqpoints + Asdpoints;

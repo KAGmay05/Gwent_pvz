@@ -7,22 +7,60 @@ public class Checking : MonoBehaviour
 	public GameObject clima;
 	public void CheckingEffects()
 	{
-		UnityEngine.Debug.Log("entro al checking afuera");
-		Effects efectos = GameObject.Find("efectos").GetComponent<Effects>();
 		CardDisplay[] cardsClima = clima.GetComponentsInChildren<CardDisplay>();
-		foreach (var card in cardsClima)
+		Effects efectos = GameObject.Find("efectos").GetComponent<Effects>();
+
+		if (cardsClima.Length == 0)
 		{
-			UnityEngine.Debug.Log("entro al checking");
-
-
-			CardDisplay cardDisplay = card.GetComponent<CardDisplay>();
-			if (cardDisplay.efecto == "climaCaC")
-			{
-				UnityEngine.Debug.Log("checkeo");
-				efectos.WeatherCaC();
-			}
-
+			UnityEngine.Debug.Log("No hay CardDisplay en clima");
+			return;
 		}
+		else
+		{
+			foreach (var card in cardsClima)
+			{
+				UnityEngine.Debug.Log("entro al checking");
+				if (card.efecto == "climaCaC")
+				{
+					UnityEngine.Debug.Log("checkeo");
+					efectos.WeatherCaC();
+				}
+				else if (card.efecto == "climaArq")
+				{
+					UnityEngine.Debug.Log("checkeo");
+					efectos.WeatherArq();
+				}
+
+			}
+		}
+		// foreach (Transform child in clima.transform)
+		// {
+		// 	UnityEngine.Debug.Log("entro al checking");
+		// }
+
+		// UnityEngine.Debug.Log("entro al checking afuera");
+
+		// // CardDisplay[] cardsClima = clima.GetComponentsInChildren<CardDisplay>();
+		// if (clima == null)
+		// {
+		// 	UnityEngine.Debug.Log("clima es null");
+		// 	return;
+		// }
+
+		// if (cardsClima.Length == 0)
+		// {
+		// 	UnityEngine.Debug.Log("No hay CardDisplay en clima");
+		// 	return;
+		// }
+		// if (!clima.activeInHierarchy)
+		// {
+		// 	UnityEngine.Debug.Log("clima está inactivo");
+		// 	return;
+		// }
+
+
+
+
 
 		// foreach (Transform child in playerArq.transform)
 		// {
@@ -55,5 +93,5 @@ public class Checking : MonoBehaviour
 		// 	card.transform.SetParent(cementery.transform, false);
 		// }
 	}
-}
 
+}

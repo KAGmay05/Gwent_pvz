@@ -457,83 +457,96 @@ public class Effects : MonoBehaviour
         string mazorc = "mazorcañon";
 
         CardDisplay[] cardsAsd = playerAsd.GetComponentsInChildren<CardDisplay>();
-        // List<GameObject> mazorccards = new List<GameObject>();
+        List<CardDisplay> mazorccards = new List<CardDisplay>();
         foreach (var card in cardsAsd)
         {
 
             if (card.name == mazorc)
             {
-                // mazorccards.Add(card);
+                mazorccards.Add(card);
                 numAsd++;
                 UnityEngine.Debug.Log("el numero de veces puesto es" + numAsd);
-                card.power = card.power * numAsd;
-            }
-            // foreach (var cardmazor in mazorccards)
-            // {
 
-            //     UnityEngine.Debug.Log("el power es" + card.power);
-            // }
+            }
+            foreach (var cardmazor in mazorccards)
+            {
+
+                cardmazor.power = cardmazor.power * numAsd;
+                UnityEngine.Debug.Log("el power es" + card.power);
+            }
 
         }
-        // for (int i = 0; i<cardsAsd.Count; i++)
-        //     {
-        //         
-        //         Cards card = cardsAsd[i];
-        //         if (card.name == mazorc)
-        //         {
-        //             Cards cardmazorc = card; 
-        //             numAsd++;
-        //             UnityEngine.Debug.Log("el numero de veces puesto es" + numAsd);
-        //             card.power = card.power * numAsd;
-        //             UnityEngine.Debug.Log("el power es" + card.power);
-        //         }
-        //         if(numAsd > 1)
-        //         {
-        //             cardmazorc.power = card.power 
-        //         }
 
-        //   }
         CardDisplay[] cardsCaC = playerCaC.GetComponentsInChildren<CardDisplay>();
+        List<CardDisplay> apisonaflorccards = new List<CardDisplay>();
         foreach (var card in cardsCaC)
         {
             if (card.name == "apisonaflor")
             {
-
+                apisonaflorccards.Add(card);
                 numCacplants++;
-                card.power = card.power * numCacplants;
+
+            }
+            foreach (var cardapisonaflor in apisonaflorccards)
+            {
+
+                cardapisonaflor.power = cardapisonaflor.power * numCacplants;
+                UnityEngine.Debug.Log("el power es" + card.power);
             }
 
         }
         CardDisplay[] cardsArq = playerArq.GetComponentsInChildren<CardDisplay>();
+        List<CardDisplay> guisanteshccards = new List<CardDisplay>();
         foreach (var card in cardsArq)
         {
             if (card.name == "guisantesHielo")
             {
-
+                guisanteshccards.Add(card);
                 numArqplants++;
-                card.power = card.power * numArqplants;
+
+            }
+            foreach (var cardguisantesh in guisanteshccards)
+            {
+
+                cardguisantesh.power = cardguisantesh.power * numArqplants;
+                UnityEngine.Debug.Log("el power es" + card.power);
             }
 
         }
         CardDisplay[] cardsZombiesArq = enemyArq.GetComponentsInChildren<CardDisplay>();
+        List<CardDisplay> zomboniccards = new List<CardDisplay>();
         foreach (var card in cardsZombiesArq)
         {
             if (card.name == "zomboni")
             {
-
+                zomboniccards.Add(card);
                 numArqzombies++;
-                card.power = card.power * numAsd;
+
+            }
+            foreach (var cardzomboni in zomboniccards)
+            {
+
+                cardzomboni.power = cardzomboni.power * numArqzombies;
+                UnityEngine.Debug.Log("el power es" + card.power);
             }
 
         }
+
+        List<CardDisplay> zombieConoccards = new List<CardDisplay>();
         CardDisplay[] cardsZombiesCaC = enemyCaC.GetComponentsInChildren<CardDisplay>();
         foreach (var card in cardsZombiesCaC)
         {
             if (card.name == "zombieCono")
             {
-
+                zombieConoccards.Add(card);
                 numCaCzombies++;
-                card.power = card.power * numCaCzombies;
+
+            }
+            foreach (var cardzombieCono in zombieConoccards)
+            {
+
+                cardzombieCono.power = cardzombieCono.power * numCaCzombies;
+                UnityEngine.Debug.Log("el power es" + card.power);
             }
 
         }
@@ -572,7 +585,7 @@ public class Effects : MonoBehaviour
         foreach (var card in cardsenemyCaC)
         {
             zombiesCaC++;
-            UnityEngine.Debug.Log("hay" + zombiesCaC + "en CaC");
+
 
         }
 
@@ -580,27 +593,26 @@ public class Effects : MonoBehaviour
         foreach (var card in cardsenemyArq)
         {
             zombiesArq++;
-            UnityEngine.Debug.Log("hay" + zombiesArq + "en arquero");
+
         }
 
         CardDisplay[] cardsenemyAsd = enemyAsd.GetComponentsInChildren<CardDisplay>();
         foreach (var card in cardsenemyAsd)
         {
             zombiesAsd++;
-            UnityEngine.Debug.Log("hay" + zombiesAsd + "en asedio");
 
         }
         totalPlants = plantsArq + plantsAsd + plantsCaC;
-        UnityEngine.Debug.Log("hay" + totalPlants + "plantas en total");
+
 
         totalzombies = zombiesArq + zombiesAsd + zombiesCaC;
         GameManager gameManager = GameObject.Find("gamemanager").GetComponent<GameManager>();
         int pPoints = gameManager.totalPlantspoints + 12;
         int zPoints = gameManager.totalZombiespoints;
-        UnityEngine.Debug.Log("hay" + pPoints + "total puntos de plantas");
+
         int newpowerPlants = pPoints / totalPlants;
         int newpowerZombies = zPoints / totalzombies;
-        UnityEngine.Debug.Log("nuevos puntos plantas son" + newpowerPlants);
+
 
         foreach (var card in cardsCaC)
         {

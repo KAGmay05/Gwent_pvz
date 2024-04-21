@@ -199,7 +199,7 @@ public class turns : MonoBehaviour
 
 			card.transform.SetParent(cementery.transform, false);
 		}
-		CardDisplay[] cardsZombiesCaC = playerCaC.GetComponentsInChildren<CardDisplay>();
+		CardDisplay[] cardsZombiesCaC = enemyCaC.GetComponentsInChildren<CardDisplay>();
 		foreach (var card in cardsZombiesCaC)
 		{
 

@@ -5,6 +5,7 @@ using UnityEngine;
 public class Checking : MonoBehaviour
 {
 	public GameObject clima;
+	public GameObject aum;
 	public void CheckingEffects()
 	{
 		CardDisplay[] cardsClima = clima.GetComponentsInChildren<CardDisplay>();
@@ -30,68 +31,33 @@ public class Checking : MonoBehaviour
 					UnityEngine.Debug.Log("checkeo");
 					efectos.WeatherArq();
 				}
+				else if (card.efecto == "climaAsd")
+				{
+					UnityEngine.Debug.Log("checkeo");
+					efectos.WeatherAsd();
+				}
 
 			}
 		}
-		// foreach (Transform child in clima.transform)
-		// {
-		// 	UnityEngine.Debug.Log("entro al checking");
-		// }
+		CardDisplay[] cardaum = aum.GetComponentsInChildren<CardDisplay>();
+		if (cardaum.Length == 0)
+		{
+			UnityEngine.Debug.Log("No hay CardDisplay en aumento");
+			return;
+		}
+		else
+		{
+			foreach (var card in cardaum)
+			{
+				UnityEngine.Debug.Log("entro al checking aumento");
+				if (card.efecto == "aumento")
+				{
+					UnityEngine.Debug.Log("checkeo aumento");
+					efectos.Aumento();
+				}
 
-		// UnityEngine.Debug.Log("entro al checking afuera");
+			}
 
-		// // CardDisplay[] cardsClima = clima.GetComponentsInChildren<CardDisplay>();
-		// if (clima == null)
-		// {
-		// 	UnityEngine.Debug.Log("clima es null");
-		// 	return;
-		// }
-
-		// if (cardsClima.Length == 0)
-		// {
-		// 	UnityEngine.Debug.Log("No hay CardDisplay en clima");
-		// 	return;
-		// }
-		// if (!clima.activeInHierarchy)
-		// {
-		// 	UnityEngine.Debug.Log("clima está inactivo");
-		// 	return;
-		// }
-
-
-
-
-
-		// foreach (Transform child in playerArq.transform)
-		// {
-		// 	GameObject card = child.gameObject;
-		// 	card.transform.SetParent(cementery.transform, false);
-		// }
-		// foreach (Transform child in playerAsd.transform)
-		// {
-		// 	GameObject card = child.gameObject;
-		// 	card.transform.SetParent(cementery.transform, false);
-		// }
-		// foreach (Transform child in enemyArq.transform)
-		// {
-		// 	GameObject card = child.gameObject;
-		// 	card.transform.SetParent(cementery.transform, false);
-		// }
-		// foreach (Transform child in enemyAsd.transform)
-		// {
-		// 	GameObject card = child.gameObject;
-		// 	card.transform.SetParent(cementery.transform, false);
-		// }
-		// foreach (Transform child in enemyCaC.transform)
-		// {
-		// 	GameObject card = child.gameObject;
-		// 	card.transform.SetParent(cementery.transform, false);
-		// }
-		// foreach (Transform child in clima.transform)
-		// {
-		// 	GameObject card = child.gameObject;
-		// 	card.transform.SetParent(cementery.transform, false);
-		// }
+		}
 	}
-
 }

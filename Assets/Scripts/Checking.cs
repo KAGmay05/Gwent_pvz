@@ -6,6 +6,7 @@ public class Checking : MonoBehaviour
 {
 	public GameObject clima;
 	public GameObject aum;
+	public GameObject aumZombies;
 	public void CheckingEffects()
 	{
 		CardDisplay[] cardsClima = clima.GetComponentsInChildren<CardDisplay>();
@@ -54,6 +55,26 @@ public class Checking : MonoBehaviour
 				{
 					UnityEngine.Debug.Log("checkeo aumento");
 					efectos.Aumento();
+				}
+
+			}
+
+		}
+		CardDisplay[] cardaumZombies = aumZombies.GetComponentsInChildren<CardDisplay>();
+		if (cardaumZombies.Length == 0)
+		{
+			UnityEngine.Debug.Log("No hay CardDisplay en aumento");
+			return;
+		}
+		else
+		{
+			foreach (var card in cardaumZombies)
+			{
+				UnityEngine.Debug.Log("entro al checking aumento");
+				if (card.efecto == "aumento")
+				{
+					UnityEngine.Debug.Log("checkeo aumento");
+					efectos.AumentoZombies();
 				}
 
 			}

@@ -5,6 +5,7 @@ using UnityEngine.UI;
 
 public class CardDisplay : MonoBehaviour
 {
+  public string tipo;
   public string faction;
   public int power;
   public string efecto;
@@ -22,6 +23,7 @@ public class CardDisplay : MonoBehaviour
   public string name;
   void Start()
   {
+    tipo = card.tipo;
     name = card.name;
     ogpower = card.ogpower;
     faction = card.faction;

@@ -20,6 +20,7 @@ public class Card : ScriptableObject
     public string efecto;
     public string faction;
     public int ogpower;
+    public string tipo;
 
     public Card()
     {

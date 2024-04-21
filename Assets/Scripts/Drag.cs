@@ -137,12 +137,22 @@ public class Drag : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHand
 				efectos.WeatherAsd();
 
 			}
-			else if (effect == a)
+			else if (effect == a && cardDisplay.faction == "plantas")
 			{
+				UnityEngine.Debug.Log("aumento plantas");
 				aum = true;
 				efectos.Aumento();
 
+
 			}
+			else if (effect == a && cardDisplay.faction == "zombies")
+			{
+				UnityEngine.Debug.Log("aumento zombies");
+				aum = true;
+				efectos.AumentoZombies();
+
+			}
+
 
 			else if (effect == despeje)
 			{
@@ -163,7 +173,7 @@ public class Drag : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHand
 			}
 			else if (effect == multiply)
 			{
-				UnityEngine.Debug.Log("multiplico");
+				UnityEngine.Debug.Log("multiplico carta");
 				efectos.Multiply();
 
 			}
@@ -236,7 +246,7 @@ public class Drag : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHand
 		if (señuelo.decoytime && señuelo.factionp)
 		{
 
-			if (cardDisplay.faction == "plantas")
+			if (cardDisplay.faction == "plantas" && cardDisplay.tipo != "oro")
 			{
 
 				GameObject zone1 = GameObject.Find("PlayerArea");
@@ -250,7 +260,7 @@ public class Drag : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHand
 		}
 		else if (señuelo.decoytime && señuelo.factionz)
 		{
-			if (cardDisplay.faction == "zombies")
+			if (cardDisplay.faction == "zombies" && cardDisplay.tipo != "oro")
 			{
 				GameObject zone1 = GameObject.Find("EnemyArea");
 				cardDisplay.power = cardDisplay.ogpower;

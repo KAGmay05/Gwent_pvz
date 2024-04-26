@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using System.Collections;
 using UnityEngine;
-using UnityEditor;
+
 using UnityEngine.UI;
 
 public class Draw : MonoBehaviour
@@ -75,9 +75,24 @@ public class Draw : MonoBehaviour
   public List<GameObject> plantsOnBoard = new List<GameObject>();
   public List<GameObject> zombiesOnBoard = new List<GameObject>();
 
+  public GameObject almanaqPlantas;
+  public GameObject almanaqZombies;
+  public GameObject info;
 
   void Start()
   {
+    CanvasGroup canvasGroup = almanaqPlantas.GetComponent<CanvasGroup>();
+    canvasGroup.alpha = 0;
+    canvasGroup.interactable = false;
+    canvasGroup.blocksRaycasts = false;
+    CanvasGroup canvasGroupz = almanaqZombies.GetComponent<CanvasGroup>();
+    canvasGroupz.alpha = 0;
+    canvasGroupz.interactable = false;
+    canvasGroupz.blocksRaycasts = false;
+    CanvasGroup canvasinfo = info.GetComponent<CanvasGroup>();
+    canvasinfo.alpha = 0;
+    canvasinfo.interactable = false;
+    canvasinfo.blocksRaycasts = false;
     Panel();
 
     cards.Add(guisantralladora);
@@ -182,14 +197,14 @@ public class Draw : MonoBehaviour
   }
   public void ThirdRound()
   {
-    for (var i = 0; i < 3; i++)
+    for (var i = 0; i < 2; i++)
     {
       int RandomIndex = Random.Range(0, cards.Count);
       GameObject playerCard1 = Instantiate(cards[RandomIndex], new Vector3(0, 0, 0), Quaternion.identity);
       playerCard1.transform.SetParent(PlayerArea.transform, false);
       cards.RemoveAt(RandomIndex);
     }
-    for (var i = 0; i < 3; i++)
+    for (var i = 0; i < 2; i++)
     {
       int RandomIndex = Random.Range(0, enemycards.Count);
       GameObject enemyCard1 = Instantiate(enemycards[RandomIndex], new Vector3(0, 0, 0), Quaternion.identity);

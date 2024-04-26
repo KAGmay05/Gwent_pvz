@@ -1,8 +1,3 @@
-using System.IO;
-using System.Text.RegularExpressions;
-
-
-using UnityEditor;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -110,7 +105,7 @@ public class Effects : MonoBehaviour
         {
             if (card.tipo != "oro")
             {
-                if (card.power > maxCaC)
+                if (card.power > maxArq)
                 {
                     maxArq = card.power;
                     maxCardArq = card;
@@ -124,7 +119,7 @@ public class Effects : MonoBehaviour
         {
             if (card.tipo != "oro")
             {
-                if (card.power > maxCaC)
+                if (card.power > maxAsd)
                 {
                     maxAsd = card.power;
                     maxCardAsd = card;
@@ -160,7 +155,7 @@ public class Effects : MonoBehaviour
         {
             if (card.tipo != "oro")
             {
-                if (card.power > maxCaC)
+                if (card.power > maxenemyCaC)
                 {
                     maxenemyCaC = card.power;
                     maxCardCaCzombies = card;
@@ -175,7 +170,7 @@ public class Effects : MonoBehaviour
         {
             if (card.tipo != "oro")
             {
-                if (card.power > maxCaC)
+                if (card.power > maxenemyArq)
                 {
                     maxenemyArq = card.power;
                     maxCardArqzombies = card;
@@ -189,7 +184,7 @@ public class Effects : MonoBehaviour
         {
             if (card.tipo != "oro")
             {
-                if (card.power > maxCaC)
+                if (card.power > maxenemyAsd)
                 {
                     maxenemyAsd = card.power;
                     maxCardAsdzombies = card;
@@ -198,6 +193,7 @@ public class Effects : MonoBehaviour
             }
 
         }
+
         int maxZombies = Math.Max(maxenemyCaC, maxenemyArq);
         maxZombies = Math.Max(maxZombies, maxenemyAsd);
         if (maxZombies == maxenemyCaC)
@@ -218,72 +214,124 @@ public class Effects : MonoBehaviour
     {
         gameManager = GameObject.Find("gamemanager").GetComponent<GameManager>();
 
-        int maxCaC = 0;
-        int maxArq = 0;
-        int maxAsd = 0;
-        CardDisplay maxCardCaC = null;
-        CardDisplay maxCardArq = null;
-
-        CardDisplay maxCardAsd = null;
+        int minCaC = 0;
+        int minArq = 0;
+        int minAsd = 0;
+        CardDisplay minCardCaC = null;
+        CardDisplay minCardArq = null;
+        CardDisplay minCardAsd = null;
 
 
 
         CardDisplay[] cardsCaC = enemyCaC.GetComponentsInChildren<CardDisplay>();
-        foreach (var card in cardsCaC)
+        if (cardsCaC != null)
         {
-            if (card.tipo != "oro")
+            foreach (var card in cardsCaC)
             {
-                if (card.power > maxCaC)
+                if (card.tipo != "oro")
                 {
-                    maxCaC = card.power;
-                    maxCardCaC = card;
+                    minCaC = card.power;
+                    minCardCaC = card;
+                    UnityEngine.Debug.Log("entro al primer if efecto");
+                    if (card.power < minCaC)
+                    {
+                        UnityEngine.Debug.Log("entro al segundo if");
+                        minCaC = card.power;
+                        minCardCaC = card;
+
+                    }
 
                 }
-            }
 
+            }
         }
 
         CardDisplay[] cardsArq = enemyArq.GetComponentsInChildren<CardDisplay>();
-        foreach (var card in cardsArq)
+        if (cardsArq != null)
         {
-            if (card.tipo != "oro")
+            foreach (var card in cardsArq)
             {
-                if (card.power > maxCaC)
+                if (card.tipo != "oro")
                 {
-                    maxArq = card.power;
-                    maxCardArq = card;
+                    minArq = card.power;
+                    minCardArq = card;
+                    if (card.power < minArq)
+                    {
+                        minArq = card.power;
+                        minCardArq = card;
+
+                    }
 
                 }
             }
         }
 
         CardDisplay[] cardsAsd = enemyAsd.GetComponentsInChildren<CardDisplay>();
-        foreach (var card in cardsAsd)
+        if (cardsAsd != null)
         {
-            if (card.tipo != "oro")
+            foreach (var card in cardsAsd)
             {
-                if (card.power > maxCaC)
+                if (card.tipo != "oro")
                 {
-                    maxAsd = card.power;
-                    maxCardAsd = card;
+                    minAsd = card.power;
+                    minCardAsd = card;
+                    if (card.power < minAsd)
+                    {
+                        minAsd = card.power;
+                        minCardAsd = card;
+
+                    }
 
                 }
-            }
 
+            }
         }
-        int max = Math.Max(maxCaC, maxArq);
-        max = Math.Max(max, maxAsd);
-        if (max == maxCaC)
+        int min = 0;
+        if (minCaC == 0 && minAsd == 0)
         {
-            maxCardCaC.transform.SetParent(cementery.transform, false);
+            min = minArq;
         }
-        else if (max == maxArq)
+        else if (minArq == 0 && minAsd == 0)
         {
-            maxCardArq.transform.SetParent(cementery.transform, false);
+            min = minCaC;
+        }
+        else if (minCaC == 0 && minArq == 0)
+        {
+            min = minAsd;
+        }
+        else if (minCaC == 0)
+        {
+            min = Math.Min(minAsd, minArq);
+        }
+        else if (minAsd == 0)
+        {
+            min = Math.Min(minCaC, minArq);
+        }
+        else if (minArq == 0)
+        {
+            min = Math.Min(minCaC, minAsd);
         }
         else
         {
-            maxCardAsd.transform.SetParent(cementery.transform, false);
+            min = Math.Min(minCaC, minArq);
+            min = Math.Min(min, minAsd);
+        }
+
+        if (min == minCaC)
+        {
+            UnityEngine.Debug.Log("encontro la carta en CaC");
+            minCardCaC.transform.SetParent(cementery.transform, false);
+
+        }
+        else if (min == minArq)
+        {
+            UnityEngine.Debug.Log("encontro la carta en aqr");
+            minCardArq.transform.SetParent(cementery.transform, false);
+        }
+        else
+        {
+            UnityEngine.Debug.Log("encontro la carta en asd");
+            minCardAsd.transform.SetParent(cementery.transform, false);
         }
 
     }
@@ -368,9 +416,8 @@ public class Effects : MonoBehaviour
         CardDisplay[] cardsPlantsCaC = playerCaC.GetComponentsInChildren<CardDisplay>();
         foreach (var card in cardsPlantsCaC)
         {
+
             card.power = card.ogpower;
-
-
         }
         CardDisplay[] cardsZombiesCaC = enemyCaC.GetComponentsInChildren<CardDisplay>();
         foreach (var card in cardsZombiesCaC)
@@ -430,39 +477,59 @@ public class Effects : MonoBehaviour
         int zombiesArq = 0;
         int zombiesAsd = 0;
         CardDisplay[] cardsCaC = playerCaC.GetComponentsInChildren<CardDisplay>();
+
         foreach (var card in cardsCaC)
         {
-            plantsCaC++;
+            if (card.tipo != "oro")
+            {
+                plantsCaC++;
+            }
 
         }
         CardDisplay[] cardsArq = playerArq.GetComponentsInChildren<CardDisplay>();
         foreach (var card in cardsArq)
         {
-            plantsArq++;
+            if (card.tipo != "oro")
+            {
+                plantsArq++;
+            }
 
         }
         CardDisplay[] cardsAsd = playerAsd.GetComponentsInChildren<CardDisplay>();
         foreach (var card in cardsAsd)
         {
-            plantsAsd++;
+            if (card.tipo != "oro")
+            {
+                plantsAsd++;
+            }
 
         }
         CardDisplay[] cardsZombiesCaC = enemyCaC.GetComponentsInChildren<CardDisplay>();
         foreach (var card in cardsZombiesCaC)
         {
-            zombiesCaC++;
+            if (card.tipo != "oro")
+            {
+                zombiesCaC++;
+            }
 
         }
         CardDisplay[] cardsZombiesArq = enemyArq.GetComponentsInChildren<CardDisplay>();
         foreach (var card in cardsZombiesArq)
         {
-            zombiesArq++;
+            if (card.tipo != "oro")
+            {
+                zombiesArq++;
+            }
 
         }
         CardDisplay[] cardsZombiesAsd = enemyAsd.GetComponentsInChildren<CardDisplay>();
         foreach (var card in cardsZombiesAsd)
         {
-            zombiesAsd++;
+            if (card.tipo != "oro")
+            {
+                zombiesAsd++;
+            }
+
 
         }
 
@@ -585,9 +652,8 @@ public class Effects : MonoBehaviour
     {
         int numAsd = 0;
         int numArqplants = 0;
-        int numCacplants = 0;
         int numCaCzombies = 0;
-        int numArqzombies = 0;
+        int numAsdzombies = 0;
 
         string mazorc = "mazorcañon";
 
@@ -613,25 +679,7 @@ public class Effects : MonoBehaviour
 
         }
 
-        CardDisplay[] cardsCaC = playerCaC.GetComponentsInChildren<CardDisplay>();
-        List<CardDisplay> apisonaflorccards = new List<CardDisplay>();
-        foreach (var card in cardsCaC)
-        {
-            if (card.name == "apisonaflor")
-            {
-                UnityEngine.Debug.Log("entro apisonaflor");
-                apisonaflorccards.Add(card);
-                numCacplants++;
 
-            }
-            foreach (var cardapisonaflor in apisonaflorccards)
-            {
-
-                cardapisonaflor.power = cardapisonaflor.ogpower * numCacplants;
-                UnityEngine.Debug.Log("el power es" + card.power);
-            }
-
-        }
         CardDisplay[] cardsArq = playerArq.GetComponentsInChildren<CardDisplay>();
         List<CardDisplay> guisanteshccards = new List<CardDisplay>();
         foreach (var card in cardsArq)
@@ -651,21 +699,21 @@ public class Effects : MonoBehaviour
             }
 
         }
-        CardDisplay[] cardsZombiesArq = enemyArq.GetComponentsInChildren<CardDisplay>();
+        CardDisplay[] cardsZombiesAsd = enemyAsd.GetComponentsInChildren<CardDisplay>();
         List<CardDisplay> zomboniccards = new List<CardDisplay>();
-        foreach (var card in cardsZombiesArq)
+        foreach (var card in cardsZombiesAsd)
         {
             if (card.name == "zomboni")
             {
                 zomboniccards.Add(card);
-                numArqzombies++;
+                numAsdzombies++;
                 UnityEngine.Debug.Log("entro zomboni");
 
             }
             foreach (var cardzomboni in zomboniccards)
             {
 
-                cardzomboni.power = cardzomboni.ogpower * numArqzombies;
+                cardzomboni.power = cardzomboni.ogpower * numAsdzombies;
                 UnityEngine.Debug.Log("el power es" + card.ogpower);
             }
 

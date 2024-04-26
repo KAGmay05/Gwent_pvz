@@ -198,6 +198,8 @@ public class Drag : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHand
 				else
 				{
 					señuelo.factionz = true;
+					UnityEngine.Debug.Log("entro a faction == zombies");
+
 				}
 			}
 
@@ -243,12 +245,14 @@ public class Drag : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHand
 	{
 		CardDisplay cardDisplay = GetComponent<CardDisplay>();
 		turns señuelo = GameObject.Find("TurnSystem").GetComponent<turns>();
-		if (señuelo.decoytime && señuelo.factionp)
+		if (señuelo.decoytime && señuelo.factionp == true)
 		{
 
+			UnityEngine.Debug.Log("entro al primer if del decoy");
 			if (cardDisplay.faction == "plantas" && cardDisplay.tipo != "oro")
 			{
 
+				UnityEngine.Debug.Log("entro al segundo if del decoy");
 				GameObject zone1 = GameObject.Find("PlayerArea");
 				cardDisplay.power = cardDisplay.ogpower;
 				transform.position = zone1.transform.position;
@@ -256,6 +260,7 @@ public class Drag : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHand
 				señuelo.decoytime = false;
 				onField = false;
 				señuelo.EndTurn();
+				UnityEngine.Debug.Log("esta saliendo del decoy");
 			}
 		}
 		else if (señuelo.decoytime && señuelo.factionz)

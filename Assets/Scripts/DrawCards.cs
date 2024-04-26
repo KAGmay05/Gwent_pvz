@@ -1,8 +1,8 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEditor;
-public class DrawCards : MonoBehaviour 
+
+public class DrawCards : MonoBehaviour
 {
     public GameObject normalcard;
     public GameObject Cardwithhability;
@@ -14,7 +14,7 @@ public class DrawCards : MonoBehaviour
     void Start()
     {
         cards.Add(normalcard); //quite una pila de gente
-  
+
 
     }
 
@@ -29,5 +29,5 @@ public class DrawCards : MonoBehaviour
         enemyCard.transform.SetParent(EnemyArea.transform, false);
 
     }
-	
+
 }

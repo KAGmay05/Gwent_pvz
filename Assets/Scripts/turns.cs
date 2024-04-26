@@ -64,7 +64,7 @@ public class turns : MonoBehaviour
 			Checking checking = GameObject.Find("checking").GetComponent<Checking>();
 
 			checking.CheckingEffects();
-			UnityEngine.Debug.Log("esta comprobando");
+			
 
 
 		}
@@ -73,12 +73,12 @@ public class turns : MonoBehaviour
 			Visibility1(playerhand, false);
 			Visibility1(enemyhand, true);
 			cardPlayed = true;
-			UnityEngine.Debug.Log("se convierte en true");
+			
 			UnityEngine.Debug.Log("Turno 2");
 			Checking checking = GameObject.Find("checking").GetComponent<Checking>();
 
 			checking.CheckingEffects();
-			UnityEngine.Debug.Log("esta comprobando");
+			
 
 
 
@@ -137,7 +137,7 @@ public class turns : MonoBehaviour
 			if (gameManager.plants == 2 && gameManager.zombies == 0 || gameManager.plants == 0 && gameManager.zombies == 2)
 			{
 				roundEnded = true;
-				UnityEngine.Debug.Log("aaaa esta pasando");
+				
 				gameManager.EndGame();
 			}
 
@@ -160,7 +160,7 @@ public class turns : MonoBehaviour
 					Visibility1(playerhand, true);
 					Visibility1(enemyhand, false);
 					UnityEngine.Debug.Log("Turno 1");
-					secondDraw = GameObject.Find("Deck").GetComponent<Draw>();
+					thirdDraw = GameObject.Find("Deck").GetComponent<Draw>();
 					thirdDraw.ThirdRound();
 				}
 
@@ -170,7 +170,7 @@ public class turns : MonoBehaviour
 		if (passNum == 7)
 		{
 			roundEnded = true;
-			UnityEngine.Debug.Log("se cambia a true num=7");
+			
 			gameManager.DetermineWinner();
 			gameManager.EndGame();
 		}

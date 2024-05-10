@@ -9,6 +9,7 @@ using UnityEngine;
 public class turns : MonoBehaviour
 {
 
+	public GameObject aumZombies;
 	public GameObject aum;
 	public bool decoytime;
 	public bool factionp;
@@ -225,6 +226,11 @@ public class turns : MonoBehaviour
 		}
 
 		foreach (Transform child in aum.transform)
+		{
+			GameObject card = child.gameObject;
+			card.transform.SetParent(cementery.transform, false);
+		}
+		foreach (Transform child in aumZombies.transform)
 		{
 			GameObject card = child.gameObject;
 			card.transform.SetParent(cementery.transform, false);

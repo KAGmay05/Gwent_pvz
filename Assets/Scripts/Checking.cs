@@ -41,25 +41,29 @@ public class Checking : MonoBehaviour
 
 			}
 		}
-		CardDisplay[] cardaum = aum.GetComponentsInChildren<CardDisplay>();
-		if (cardaum.Length == 0)
+		// CardDisplay[] cardaum = aum.GetComponentsInChildren<CardDisplay>();
+		// if (cardaum.Length == 0)
+		// {
+		// 	UnityEngine.Debug.Log("esta vaci aumento");
+		// 	return;
+		// }
+		// else
+		// {
+		// 	foreach (var card in cardaum)
+		// 	{
+		// 		if (card.efecto == "aumento")
+		// 		{
+
+		// 			UnityEngine.Debug.Log("aumento checking");
+		// 			efectos.Aumento();
+		// 		}
+
+		// 	}
+
+		// }
+		foreach (Transform child in aum.transform)
 		{
-
-			return;
-		}
-		else
-		{
-			foreach (var card in cardaum)
-			{
-
-				if (card.efecto == "aumento")
-				{
-
-					efectos.Aumento();
-				}
-
-			}
-
+			efectos.Aumento();
 		}
 		CardDisplay[] cardaumZombies = aumZombies.GetComponentsInChildren<CardDisplay>();
 		if (cardaumZombies.Length == 0)

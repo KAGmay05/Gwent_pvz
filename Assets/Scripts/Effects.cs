@@ -1,3 +1,4 @@
+using System.Text.RegularExpressions;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -43,11 +44,7 @@ public class Effects : MonoBehaviour
             {
                 if (!affectedcards.Contains(card))
                 {
-
-
-
                     cardDisplay.power = cardDisplay.power * 2;
-
                 }
                 affectedcards.Add(card);
             }
@@ -130,18 +127,7 @@ public class Effects : MonoBehaviour
         }
         int max = Math.Max(maxCaC, maxArq);
         max = Math.Max(max, maxAsd);
-        if (max == maxCaC)
-        {
-            maxCardCaC.transform.SetParent(cementery.transform, false);
-        }
-        else if (max == maxArq)
-        {
-            maxCardArq.transform.SetParent(cementery.transform, false);
-        }
-        else
-        {
-            maxCardAsd.transform.SetParent(cementery.transform, false);
-        }
+
         // propio
         int maxenemyCaC = 0;
         int maxenemyArq = 0;
@@ -196,20 +182,40 @@ public class Effects : MonoBehaviour
 
         int maxZombies = Math.Max(maxenemyCaC, maxenemyArq);
         maxZombies = Math.Max(maxZombies, maxenemyAsd);
-        if (maxZombies == maxenemyCaC)
+        max = Math.Max(max, maxZombies);
+        if (max != 0)
         {
-            maxCardCaCzombies.transform.SetParent(cementery.transform, false);
-        }
-        else if (maxZombies == maxenemyArq)
-        {
-            maxCardArqzombies.transform.SetParent(cementery.transform, false);
-        }
-        else
-        {
-            maxCardAsdzombies.transform.SetParent(cementery.transform, false);
+            if (max == maxCaC)
+            {
+                maxCardCaC.transform.SetParent(cementery.transform, false);
+            }
+            else if (max == maxArq)
+            {
+                maxCardArq.transform.SetParent(cementery.transform, false);
+            }
+            else if (max == maxAsd)
+            {
+                maxCardAsd.transform.SetParent(cementery.transform, false);
+            }
+
+            else if (max == maxenemyCaC)
+            {
+                maxCardCaCzombies.transform.SetParent(cementery.transform, false);
+            }
+            else if (max == maxenemyArq)
+            {
+                maxCardArqzombies.transform.SetParent(cementery.transform, false);
+            }
+            else
+            {
+                maxCardAsdzombies.transform.SetParent(cementery.transform, false);
+            }
+
+
         }
 
     }
+
     public void DeleteMinZombiecard()
     {
         gameManager = GameObject.Find("gamemanager").GetComponent<GameManager>();
@@ -287,6 +293,8 @@ public class Effects : MonoBehaviour
             }
         }
         int min = 0;
+
+
         if (minCaC == 0 && minAsd == 0)
         {
             min = minArq;
@@ -317,21 +325,24 @@ public class Effects : MonoBehaviour
             min = Math.Min(min, minAsd);
         }
 
-        if (min == minCaC)
+        if (min != 0)
         {
-            UnityEngine.Debug.Log("encontro la carta en CaC");
-            minCardCaC.transform.SetParent(cementery.transform, false);
+            if (min == minCaC)
+            {
+                UnityEngine.Debug.Log("encontro la carta en CaC");
+                minCardCaC.transform.SetParent(cementery.transform, false);
 
-        }
-        else if (min == minArq)
-        {
-            UnityEngine.Debug.Log("encontro la carta en aqr");
-            minCardArq.transform.SetParent(cementery.transform, false);
-        }
-        else
-        {
-            UnityEngine.Debug.Log("encontro la carta en asd");
-            minCardAsd.transform.SetParent(cementery.transform, false);
+            }
+            else if (min == minArq)
+            {
+                UnityEngine.Debug.Log("encontro la carta en aqr");
+                minCardArq.transform.SetParent(cementery.transform, false);
+            }
+            else
+            {
+                UnityEngine.Debug.Log("encontro la carta en asd");
+                minCardAsd.transform.SetParent(cementery.transform, false);
+            }
         }
 
     }
@@ -563,36 +574,9 @@ public class Effects : MonoBehaviour
             plantsMin = Math.Min(plantsCaC, plantsAsd);
             plantsMin = Math.Min(plantsMin, plantsArq);
         }
-        if (plantsMin == plantsCaC)
-        {
-            foreach (var card in cardsCaC)
-            {
-                if (cardsCaC != null)
-                {
-                    card.transform.SetParent(cementery.transform, false);
-                }
-            }
-        }
-        else if (plantsMin == plantsArq)
-        {
-            foreach (var card in cardsArq)
-            {
-                if (cardsArq != null)
-                {
-                    card.transform.SetParent(cementery.transform, false);
-                }
-            }
-        }
-        else
-        {
-            foreach (var card in cardsAsd)
-            {
-                if (cardsAsd != null)
-                {
-                    card.transform.SetParent(cementery.transform, false);
-                }
-            }
-        }
+
+
+
 
         int zombiesMin = 0;
         if (zombiesCaC == 0 && zombiesAsd == 0)
@@ -625,25 +609,57 @@ public class Effects : MonoBehaviour
             zombiesMin = Math.Min(zombiesMin, zombiesArq);
         }
 
-        if (zombiesMin == zombiesCaC)
+        int totalmin = Math.Min(plantsMin, zombiesMin);
+
+        if (totalmin == zombiesCaC)
         {
             foreach (var card in cardsZombiesCaC)
             {
                 card.transform.SetParent(cementery.transform, false);
             }
         }
-        else if (zombiesMin == zombiesArq)
+        else if (totalmin == zombiesArq)
         {
             foreach (var card in cardsZombiesArq)
             {
                 card.transform.SetParent(cementery.transform, false);
             }
         }
-        else
+        else if (totalmin == zombiesAsd)
         {
             foreach (var card in cardsZombiesAsd)
             {
                 card.transform.SetParent(cementery.transform, false);
+            }
+        }
+        else if (totalmin == plantsCaC)
+        {
+            foreach (var card in cardsCaC)
+            {
+                if (cardsCaC != null)
+                {
+                    card.transform.SetParent(cementery.transform, false);
+                }
+            }
+        }
+        else if (totalmin == plantsArq)
+        {
+            foreach (var card in cardsArq)
+            {
+                if (cardsArq != null)
+                {
+                    card.transform.SetParent(cementery.transform, false);
+                }
+            }
+        }
+        else
+        {
+            foreach (var card in cardsAsd)
+            {
+                if (cardsAsd != null)
+                {
+                    card.transform.SetParent(cementery.transform, false);
+                }
             }
         }
 
@@ -798,9 +814,26 @@ public class Effects : MonoBehaviour
         int zPoints = gameManager.totalZombiespoints;
 
 
-        int newpowerPlants = pPoints / totalPlants;
+        int newpowerPlants = 0;
+        int newpowerZombies = 0;
+        if (totalPlants != 0)
+        {
+            newpowerPlants = pPoints / totalPlants;
 
-        int newpowerZombies = zPoints / totalzombies;
+        }
+        else
+        {
+            newpowerPlants = pPoints;
+        }
+        if (totalzombies != 0)
+        {
+            newpowerZombies = zPoints / totalzombies;
+        }
+        else
+        {
+            newpowerZombies = zPoints;
+        }
+
 
 
 

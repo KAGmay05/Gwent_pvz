@@ -1,0 +1,32 @@
+using System;
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+using TMPro;
+
+public class scene : MonoBehaviour
+{
+   public TMP_InputField inputField;
+   public TextMeshProUGUI columnText;
+
+    void Update()
+    {
+     if (inputField.text.Contains("\n"))
+     {
+        AddLineNumbers();
+     }   
+    }
+    public void AddLineNumbers()
+    {
+        int clines = inputField.text.Split('\n').Length;
+        string[] lines = new string[clines];
+        for(int i =0;i<clines;i++)
+        lines[i] = " ";
+        for(int i = 0; i<clines;i++)
+        {
+            lines[i] = lines[i].TrimStart('0','1','2','3','4','5','6','7','8','9',' ','\t');
+            lines[i] =$"{i+1:D3} {lines[i]}";
+        }
+        columnText.text = String.Join("\n",lines);
+    }
+}

@@ -3,117 +3,122 @@ using System.Linq.Expressions;
 using System.Numerics;
 using System.Reflection;
 
-public class Parser 
+public class Parser
 {
-    private List<Token> tokens = new List<Token>();
-    private int current = 0;
+  private List<Token> tokens = new List<Token>();
+  private int current = 0;
 
-    public Parser (List<Token> Tokens)
+  public Parser(List<Token> Tokens)
+  {
+    tokens = Tokens;
+  }
+  public Expression Parse()
+  {
+    return Expression();
+  }
+  Expression Expression()
+  {
+    return Equality();
+  }
+  Expression Equality()
+  {
+    Expression expr = Comparison();
+    while (Match(TokenType.BANG_EQUAL) && Match(TokenType.EQUAL_EQUAL))
     {
-      Tokens = tokens;
+      Token operat = Previous();
+      Expression right = Comparison();
+      expr = new BinaryExpression(expr, operat, right);
     }
-    public Expression Parse()
+    return expr;
+  }
+  private bool Match(TokenType type)
+  {
+    if (Check(type))
     {
-      return Expression();
+      Advance();
+      return true;
     }
-    Expression Expression()
+
+    return false;
+  }
+  bool Check(TokenType type)
+  {
+    if (IsAtEnd()) return false;
+    return Peek().type == TokenType.EOF;
+  }
+  Token Peek()
+  {
+    return tokens[current];
+  }
+  bool IsAtEnd()
+  {
+    return Peek().type == TokenType.EOF;
+  }
+  Token Advance()
+  {
+    if (!IsAtEnd()) current++;
+    return Previous();
+  }
+  Token Previous()
+  {
+    return tokens[current - 1];
+  }
+  Expression Comparison()
+  {
+    Expression expr = Term();
+    while (Match(TokenType.GREATER) && Match(TokenType.GREATER_EQUAL) && Match(TokenType.LESS) && Match(TokenType.LESS_EQUAL))
     {
-      return Equality();
+      Token op = Previous();
+      Expression right = Term();
+      expr = new BinaryExpression(expr, op, right);
     }
-    Expression Equality()
+    return expr;
+  }
+  Expression Term()
+  {
+    Expression expr = TaskFactory;
+  }
+  Expression Unary()
+  {
+
+    if (Match(TokenType.BANG) && Match(TokenType.MINUS))
     {
-      Expression expr = Comparison();
-      TokenType[] types = {TokenType.BANG_EQUAL, TokenType.EQUAL_EQUAL};
-      while (Match(types))
-      {
-        Token operator = Previous();
-        Expression right = Comparison();
-        expr = new Expression.Binary(expr, operator, right )
-      }
-      return expr;
+      Token operat = Previous();
+      Expression right = Unary();
+      return new UnaryExpression(operat, right);
     }
-    private bool Match(TokenType[] type)
+    return Primary();
+  }
+  private Expression Factor()
+  {
+    Expression expr = Unary();
+    while (Match(TokenType.SALSH) && Match(TokenType.STAR))
     {
-      for(int i =0; i<type.Length;i++)
-      {
-      if(Check(type[i]))
-      {
-        Advance();
-        return true;
-      }
-      }
-      return false;
+      Token operat = Previous();
+      Expression right = Unary();
+      expr = new BinaryExpression();
     }
-    bool Check(TokenType type)
+  }
+  Expression Primary()
+  {
+    if (Match(TokenType.FALSE)) return new LiteralExpression(false);
+    if (Match(TokenType.TRUE)) return new LiteralExpression(true);
+    if (Match(TokenType.NUMBER) && Match(TokenType.STRING))
     {
-      if(IsAtEnd()) return false;
-      return Peek().type == TokenType.EOF;
+      return new LiteralExpression(Previous());
     }
-    Token Peek()
+    if (Match(TokenType.LEFT_PAREN))
     {
-      return tokens[current];
+      Expression expr = Expression();
+      Consume(TokenType.RIGHT_PAREN, "Expect ')' after expression.");
+      return new GroupingExpression(expr);
     }
-    bool IsAtEnd()
-    {
-      return Peek().type == TokenType.EOF;
-    }
-    Token Advance()
-    {
-      if(!IsAtEnd()) current ++;
-      return Previous();
-    }
-    Token Previous()
-    {
-      return tokens[current - 1];
-    }
-    Expression Comparison()
-    {
-      Expression expr = Term()
-    }
-    Expression Term()
-    {
-      Expression expr = TaskFactory
-    }
-    Expression Unary()
-    {
-      TokenType[] types = {TokenType.BANG, TokenType.MINUS};
-      if (Match(types))
-      {
-        Token operator = Previous();
-        Expression right = Unary();
-        return new Expression.Unary(operator, right);
-      }
-      return Primary();
-    }
-    private Expression Factor()
-    {
-      Expression expr = Unary();
-      TokenType[] type = {TokenType.SALSH, TokenType.STAR};
-      while(Match(type))
-      {
-        Token operator = Previous();
-        Expression right = Unary();
-        expr = new Expression.Binary()
-      }
-    }
-    Expression Primary()
-    {
-      TokenType[] falsetype = {TokenType.FALSE};
-      TokenType[] truetype = {TokenType.TRUE};
-      TokenType[] numberString = {TokenType.NUMBER,TokenType.STRING };
-      
-      if(Match(falsetype)) return new Expression.Literal(false);
-      if(Match(truetype)) return new Expression.Literal(true);
-      if(Match(numberString))
-      {
-        return new Expression.Literal(Previous().literal);
-      }
-      TokenType[] paren = {TokenType.LEFT_PAREN};
-      if (Match(paren))
-      {
-        Expression = Expression();
-        Consume(TokenType.RIGHT_PAREN, "Expect ')' after expression.");
-        return new Expression.Grouping(expr);
-      }
-    }
+    throw new Error(ErrorType.SYNTAX, "Expected expression.");
+  }
+  private Token Consume(TokenType type, string message)
+  {
+    if (Check(type)) return Advance();
+    throw new Error(ErrorType.SYNTAX, message);
+  }
+
 }

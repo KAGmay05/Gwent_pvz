@@ -1,42 +1,42 @@
-﻿using System.Text.Json;
-
-public class Token
+﻿public class Token
 {
-    public TokenType type {get;private set;}
-    public string lexeme {get;private set;}
-    public int line {get; private set;}
-    public int column {get;private set;}
-
-     public Token (TokenType Type, string Lexeme, int Column, int Line)
+    public TokenType Type{get;set;}
+    public string Lexeme{get;set;}
+    public Object Literal{get;set;}
+    public int Line{get;set;}
+    public int Column{get;set;}
+    public Token(TokenType type, string lexeme, Object literal, int line, int column)
     {
-     type = Type;
-     lexeme = Lexeme;
-     column = Column;
-     line = Line;
+        Type=type;
+        Lexeme=lexeme;
+        Literal=literal;
+        Line=line;
+        Column = column;
     }
-
 }
 public enum TokenType
 {
-    // single-character tokens
-    LEFT_PAREN, RIGHT_PAREN, LEFT_BRACE, RIGHT_BRACE, LEFT_BRACKET, RIGHT_BRACKET,
-    COMMA, DOT, COLON, SEMICOLON,SALSH, STAR, 
-
-    // ONE OR TWO CHARACTER TOKENS
-    BANG, BANG_EQUAL, EQUAL, EQUAL_EQUAL,
-    GREATER, GREATER_EQUAL, LESS, LESS_EQUAL,
-    MINUS, MINUS_MINUS, PLUS, PLUS_PLUS,
-    PLUS_EQUAL, MINUS_EQUAL, EQUAL_GREATER,
-
-
-    // LITERALS
-    IDENTIFIER, STRING, NUMBER,
-    // KEYWORRDS
-    AND,FOR,FALSE,TRUE,WHILE,OR, 
-    EFFECT, CARD, POSTACTION, PREDICATE, IN,
-    NAME, PARAMS, ACTION,TYPE,FACTION,POWER,RANGE,
-    ONACTIVATION,FUN,SELECTOR,SINGLE,POINTER,METHOD,STRINGTYPE,NUMBERTYPE,BOOLTYPE,
-    SOURCE,
+    //Single-character tokens
+    LEFT_PAREN, RIGHT_PAREN, LEFT_BRACE, RIGHT_BRACE, LEFT_BRACK, RIGHT_BRACK,
+    COMMA, DOT, COLON, SEMICOLON, SLASH, STAR, POW, PERCENT,
+    //One or more character tokens
+    MINUS, MINUS_MINUS, MINUS_EQUALS,
+    PLUS, PLUS_PLUS, PLUS_EQUALS,
+    BANG, BANG_EQUAL,
+    EQUAL, EQUAL_EQUAL, EQUAL_GREATER,
+    GREATER, GREATER_EQUAL,
+    LESS, LESS_EQUAL,
+    ATSIGN, ATSIGN_ATSIGN,
+    //Literals
+    IDENTIFIER, STRING, NUMBER, BOOL,
+    //KeyWords
+    AND, FALSE, TRUE, OR, IN,
+    WHILE, FOR, CARD, EFFECT,
+    NAME, PARAMS, ACTION, TYPE,
+    FACTION, POWER, RANGE, ONACTIVATION,
+    SELECTOR, SINGLE, PREDICATE, POSTACTION, SOURCE,
+    ZONE, FUN, POINTER, ONACTIVATIONEFFECT,
+    NUMBERTYPE, STRINGTYPE, BOOLTYPE, 
 
     EOF
 }

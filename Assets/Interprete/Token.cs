@@ -1,11 +1,15 @@
-﻿public class Token
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+public class Token : MonoBehaviour
 {
     public TokenType Type{get;set;}
     public string Lexeme{get;set;}
-    public Object Literal{get;set;}
+    public System.Object Literal{get;set;}
     public int Line{get;set;}
     public int Column{get;set;}
-    public Token(TokenType type, string lexeme, Object literal, int line, int column)
+    public Token(TokenType type, string lexeme, object literal, int line, int column)
     {
         Type=type;
         Lexeme=lexeme;

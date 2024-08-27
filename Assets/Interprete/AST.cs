@@ -1,3 +1,7 @@
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
 public interface Node
 {
     public void Show(int space = 0);
@@ -5,19 +9,19 @@ public interface Node
 
 public class Program : Node
 {
-    public List<Card> Cards;
+    public List<CardI> CardIs;
     public List<Effect> Effects;
     public Program()
     {
-        Cards = new List<Card>();
+        CardIs = new List<CardI>();
         Effects = new List<Effect>();
     }
     public void Show(int space = 0)
     {
-        Console.WriteLine(new string(' ', space) + "Program:");
-        foreach (var card in Cards)
+        Debug.Log(new string(' ', space) + "Program:");
+        foreach (var cardI in CardIs)
         {
-            card.Show(space + 2);
+            cardI.Show(space + 2);
         }
         foreach (var effect in Effects)
         {
@@ -26,7 +30,7 @@ public class Program : Node
     }
 }
 
-public class Card : Node
+public class CardI : Node
 {
     public Type Type;
     public Name Name;
@@ -34,13 +38,13 @@ public class Card : Node
     public Power Power;
     public Range Range;
     public OnActivation OnActivation;
-    public Card()
+    public CardI()
     {
         
     }
     public void Show(int space = 0)
     {
-        Console.WriteLine(new string(' ', space) + "Card:");
+        Debug.Log(new string(' ', space) + "CardI:");
         Type?.Show(space + 2);
         Name?.Show(space + 2);
         Faction?.Show(space + 2);
@@ -60,7 +64,7 @@ public class Name : Node
     }
     public void Show(int space = 0)
     {
-        Console.WriteLine(new string(' ', space) + "Name:");
+        Debug.Log(new string(' ', space) + "Name:");
         name.Show(space + 2);
     }
 }
@@ -75,7 +79,7 @@ public class Type : Node
     }
     public void Show(int space = 0)
     {
-        Console.WriteLine(new string(' ', space) + "Type:");
+        Debug.Log(new string(' ', space) + "Type:");
         type.Show(space + 2);
     }
 }
@@ -89,7 +93,7 @@ public class Faction : Node
     }
     public void Show(int space = 0)
     {
-        Console.WriteLine(new string(' ', space) + "Faction:");
+        Debug.Log(new string(' ', space) + "Faction:");
         faction.Show(space + 2);
     }
 }
@@ -104,7 +108,7 @@ public class Power : Node
     }
     public void Show(int space = 0)
     {
-        Console.WriteLine(new string(' ', space) + "Power:");
+        Debug.Log(new string(' ', space) + "Power:");
         power.Show(space + 2);
     }
 }
@@ -137,7 +141,7 @@ public class Range : Node
     }
     public void Show(int space = 0)
     {
-        Console.WriteLine(new string(' ', space) + "Range:");
+        Debug.Log(new string(' ', space) + "Range:");
         if(range != null)
         {
             foreach(var expr in range)
@@ -147,7 +151,7 @@ public class Range : Node
         }
         else
         {
-            Console.WriteLine(new string(' ', space) + "Lexeme: " + Lexeme);
+            Debug.Log(new string(' ', space) + "Lexeme: " + Lexeme);
         }
     }
 }
@@ -161,7 +165,7 @@ public class OnActivation : Node
     }
     public void Show(int space = 0)
     {
-        Console.WriteLine(new string(' ', space) + "OnActivation:");
+        Debug.Log(new string(' ', space) + "OnActivation:");
         foreach (var element in Elements)
         {
             element.Show(space + 2);
@@ -182,7 +186,7 @@ public class OnActivationElements : Node
     }
     public void Show(int space = 0)
     {
-        Console.WriteLine(new string(' ', space) + "OnActivationElements:");
+        Debug.Log(new string(' ', space) + "OnActivationElements:");
         OAEffect?.Show(space + 2);
         Selector?.Show(space + 2);
         postAction?.Show(space + 2);
@@ -200,8 +204,8 @@ public class OAEffect : Node
     }
     public void Show(int space = 0)
     {
-        Console.WriteLine(new string(' ', space) + "OAEffect:");
-        Console.WriteLine(new string(' ', space + 2) + "Name: " + Name);
+        Debug.Log(new string(' ', space) + "OAEffect:");
+        Debug.Log(new string(' ', space + 2) + "Name: " + Name);
         foreach (var assignment in Assingments)
         {
             assignment.Show(space + 2);
@@ -219,7 +223,7 @@ public class Effect : Node
     }
     public void Show(int space = 0)
     {
-        Console.WriteLine(new string(' ', space) + "Effect:");
+        Debug.Log(new string(' ', space) + "Effect:");
         Name?.Show(space + 2);
         Params?.Show(space + 2);
         Action?.Show(space + 2);
@@ -238,7 +242,7 @@ public class Action : Node
     }
     public void Show(int space = 0)
     {
-        Console.WriteLine(new string(' ', space) + "Action:");
+        Debug.Log(new string(' ', space) + "Action:");
         Targets?.Show(space + 2);
         Context?.Show(space + 2);
         Block?.Show(space + 2);
@@ -257,7 +261,7 @@ public class Single : Node
     }
     public void Show(int space = 0)
     {
-        Console.WriteLine(new string(' ', space) + "Single: " + Value);
+        Debug.Log(new string(' ', space) + "Single: " + Value);
     }
 }
 public class Selector : Node
@@ -273,8 +277,8 @@ public class Selector : Node
     }
     public void Show(int space = 0)
     {
-        Console.WriteLine(new string(' ', space) + "Selector:");
-        Console.WriteLine(new string(' ', space + 2) + "Source: " + Source);
+        Debug.Log(new string(' ', space) + "Selector:");
+        Debug.Log(new string(' ', space + 2) + "Source: " + Source);
         Single?.Show(space + 2);
         Predicate?.Show(space + 2);
     }
@@ -290,7 +294,7 @@ public class Predicate : Node
     }
     public void Show(int space = 0)
     {
-        Console.WriteLine(new string(' ', space) + "Predicate:");
+        Debug.Log(new string(' ', space) + "Predicate:");
         Var?.Show(space + 2);
         Condition?.Show(space + 2);
     }
@@ -309,7 +313,7 @@ public class PostAction : Node
     }
     public void Show(int space = 0)
     {
-        Console.WriteLine(new string(' ', space) + "PostAction:");
+        Debug.Log(new string(' ', space) + "PostAction:");
         Type?.Show(space + 2);
         Selector?.Show(space + 2);
     }
@@ -339,29 +343,29 @@ public class Binary : Expression
             switch (Operators.Type)
             {
                 case TokenType.PLUS:
-                    return Convert.ToDouble(leftValue) + Convert.ToDouble(rightValue);    
+                    return System.Convert.ToDouble(leftValue) + System.Convert.ToDouble(rightValue);    
                 case TokenType.MINUS:
-                    return Convert.ToDouble(leftValue) - Convert.ToDouble(rightValue);
+                    return System.Convert.ToDouble(leftValue) - System.Convert.ToDouble(rightValue);
                 case TokenType.STAR:
-                    return Convert.ToDouble(leftValue) * Convert.ToDouble(rightValue);
+                    return System.Convert.ToDouble(leftValue) * System.Convert.ToDouble(rightValue);
                 case TokenType.SLASH:
-                    return Convert.ToDouble(leftValue) / Convert.ToDouble(rightValue);
+                    return System.Convert.ToDouble(leftValue) / System.Convert.ToDouble(rightValue);
                 case TokenType.PERCENT:
-                    return Convert.ToDouble(leftValue) % Convert.ToDouble(rightValue);
+                    return System.Convert.ToDouble(leftValue) % System.Convert.ToDouble(rightValue);
                 case TokenType.POW:
-                    return Math.Pow(Convert.ToDouble(leftValue),Convert.ToDouble(rightValue));
+                    return System.Math.Pow(System.Convert.ToDouble(leftValue),System.Convert.ToDouble(rightValue));
                 case TokenType.GREATER:
-                    return Convert.ToDouble(leftValue) > Convert.ToDouble(rightValue);
+                    return System.Convert.ToDouble(leftValue) > System.Convert.ToDouble(rightValue);
                 case TokenType.GREATER_EQUAL:
-                    return Convert.ToDouble(leftValue) >= Convert.ToDouble(rightValue);
+                    return System.Convert.ToDouble(leftValue) >= System.Convert.ToDouble(rightValue);
                 case TokenType.LESS:
-                    return Convert.ToDouble(leftValue) < Convert.ToDouble(rightValue);
+                    return System.Convert.ToDouble(leftValue) < System.Convert.ToDouble(rightValue);
                 case TokenType.LESS_EQUAL:
-                    return Convert.ToDouble(leftValue) <= Convert.ToDouble(rightValue);
+                    return System.Convert.ToDouble(leftValue) <= System.Convert.ToDouble(rightValue);
                 case TokenType.BANG_EQUAL: return !leftValue.Equals(rightValue);
                 case TokenType.EQUAL_EQUAL: return leftValue.Equals(rightValue);
                 default:
-                throw new InvalidOperationException("Unsupported operator: " + Operators.Lexeme);
+                throw new System.InvalidOperationException("Unsupported operator: " + Operators.Lexeme);
             }
         }
         else if(leftValue is string && rightValue is string)
@@ -371,14 +375,14 @@ public class Binary : Expression
                 case TokenType.ATSIGN : return leftValue.ToString() + rightValue.ToString();
                 case TokenType.ATSIGN_ATSIGN : return leftValue.ToString() + " " + rightValue.ToString();
                 default:
-                throw new InvalidOperationException("Unsupported operator: " + Operators.Lexeme);
+                throw new System.InvalidOperationException("Unsupported operator: " + Operators.Lexeme);
             }
         }
-        else throw new InvalidOperationException("Unsupported operator: " + Operators.Lexeme);
+        else throw new System.InvalidOperationException("Unsupported operator: " + Operators.Lexeme);
     }
     public override void Show(int space = 0)
     {
-        Console.WriteLine(new string(' ', space) + "BinaryOperator: " + Operators.Lexeme);
+        Debug.Log(new string(' ', space) + "BinaryOperator: " + Operators.Lexeme);
         Left.Show(space + 2);
         Right.Show(space + 2);
     }
@@ -417,17 +421,17 @@ public class Unary : Expression
         switch (Operators.Type)
         {
             case TokenType.MINUS:
-                return -Convert.ToDouble(rightValue);
+                return -System.Convert.ToDouble(rightValue);
             case TokenType.BANG:
                 return !(bool)rightValue;
             default:
-                throw new InvalidOperationException("Unsupported operator: " + Operators.Lexeme);
+                throw new System.InvalidOperationException("Unsupported operator: " + Operators.Lexeme);
         }
     }
     
     public override void Show(int space = 0)
     {
-        Console.WriteLine(new string(' ', space) + "Unary: " + Operators.Lexeme);
+        Debug.Log(new string(' ', space) + "Unary: " + Operators.Lexeme);
         Right.Show(space + 2);
     }
 }
@@ -448,7 +452,7 @@ public class Variable : Expression
     public Type type;
     public enum Type
     {
-        TARGETS, CONTEXT, CARD, FIELD, INT, STRING, BOOL, VOID, NULL, EFFECT
+        TARGETS, CONTEXT, CARDI, FIELD, INT, STRING, BOOL, VOID, NULL, EFFECT
     }
     public Variable(Token token)
     {
@@ -474,12 +478,12 @@ public class Variable : Expression
 
     public override object Evaluate()
     {
-        throw new NotImplementedException();
+        throw new System.NotImplementedException();
     }
 
     public override void Show(int space = 0)
     {
-        Console.WriteLine(new string(' ', space) + "Variable: " + Value + " (" + type.ToString() + ")");
+        Debug.Log(new string(' ', space) + "Variable: " + Value + " (" + type.ToString() + ")");
     }
 }
 
@@ -494,7 +498,7 @@ public class VariableComp : Variable,Statement
     
     public override void Show(int space = 0)
     {
-        Console.WriteLine(new string(' ', space) + "VariableComp: " + Value);
+        Debug.Log(new string(' ', space) + "VariableComp: " + Value);
         args?.Show(space + 2);
     }
 }
@@ -513,7 +517,7 @@ public class Number : Expression
 
     public override void Show(int space = 0)
     {
-        Console.WriteLine(new string(' ', space) + "Number: " + Value);
+        Debug.Log(new string(' ', space) + "Number: " + Value);
     }
 }
 
@@ -532,7 +536,7 @@ public class String : Expression
 
     public override void Show(int space = 0)
     {
-        Console.WriteLine(new string(' ', space) + "String: " + Value);
+        Debug.Log(new string(' ', space) + "String: " + Value);
     }
 }
 
@@ -551,7 +555,7 @@ public class Bool : Expression
 
     public override void Show(int space = 0)
     {
-        Console.WriteLine(new string(' ', space) + "Bool: " + Value);
+        Debug.Log(new string(' ', space) + "Bool: " + Value);
     }
 }
 public class ExpressionGroup : Expression
@@ -567,7 +571,7 @@ public class ExpressionGroup : Expression
     }
     public override void Show(int space = 0)
     {
-        Console.WriteLine(new string(' ', space) + "ExpressionGroup:");
+        Debug.Log(new string(' ', space) + "ExpressionGroup:");
         Exp.Show(space + 2);
     }
 }
@@ -584,7 +588,7 @@ public class Args : Node
 
     public void Show(int space = 0)
     {
-        Console.WriteLine(new string(' ', space) + "Args:");
+        Debug.Log(new string(' ', space) + "Args:");
         foreach (var arg in Arguments)
         {
             arg.Show(space + 2);
@@ -608,7 +612,7 @@ public class StatementBlock : Node
 
     public void Show(int space = 0)
     {
-        Console.WriteLine(new string(' ', space) + "StatementBlock:");
+        Debug.Log(new string(' ', space) + "StatementBlock:");
         foreach (var Statement in statements)
         {
             Statement.Show(space + 2);
@@ -627,10 +631,10 @@ public class WhileStatement : Statement
 
     public void Show(int space = 0)
     {
-        Console.WriteLine(new string(' ', space) + "WhileStatement:");
-        Console.WriteLine(new string(' ', space + 2) + "Condition:");
+        Debug.Log(new string(' ', space) + "WhileStatement:");
+        Debug.Log(new string(' ', space + 2) + "Condition:");
         Condition?.Show(space + 2);
-        Console.WriteLine(new string(' ', space + 2) + "Body:");
+        Debug.Log(new string(' ', space + 2) + "Body:");
         Body?.Show(space + 2);
     }
 }
@@ -649,12 +653,12 @@ public class ForStatement : Statement
 
     public void Show(int space = 0)
     {
-        Console.WriteLine(new string(' ', space) + "ForStatement:");
-        Console.WriteLine(new string(' ', space + 2) + "Target:");
+        Debug.Log(new string(' ', space) + "ForStatement:");
+        Debug.Log(new string(' ', space + 2) + "Target:");
         Target?.Show(space + 2);
-        Console.WriteLine(new string(' ', space + 2) + "Targets:");
+        Debug.Log(new string(' ', space + 2) + "Targets:");
         Targets?.Show(space + 2);
-        Console.WriteLine(new string(' ', space + 2) + "Body:");
+        Debug.Log(new string(' ', space + 2) + "Body:");
         Body?.Show(space + 2);
     }
 }
@@ -674,9 +678,9 @@ public class Assignment : Statement
 
     public void Show(int space = 0)
     {
-        Console.WriteLine(new string(' ', space) + "Assignment:");
+        Debug.Log(new string(' ', space) + "Assignment:");
         Left?.Show(space + 2);
-        Console.WriteLine(new string(' ', space + 2) + "Op: " + Op.Lexeme);
+        Debug.Log(new string(' ', space + 2) + "Op: " + Op.Lexeme);
         Right?.Show(space + 2);
     }
 }
@@ -704,7 +708,7 @@ public class FunctionDeclaration : Statement
         if (FunctionName == "Find") Type = Variable.Type.TARGETS;
         if (FunctionName == "Push") Type = Variable.Type.VOID;
         if (FunctionName == "SendBottom") Type = Variable.Type.VOID;
-        if (FunctionName == "Pop") Type = Variable.Type.CARD;
+        if (FunctionName == "Pop") Type = Variable.Type.CARDI;
         if (FunctionName == "Remove") Type = Variable.Type.VOID;
         if (FunctionName == "Shuffle") Type = Variable.Type.VOID;
         if (FunctionName == "Add") Type = Variable.Type.VOID;
@@ -712,10 +716,10 @@ public class FunctionDeclaration : Statement
 
     public void Show(int space = 0)
     {
-        Console.WriteLine(new string(' ', space) + "Function:");
-        Console.WriteLine(new string(' ', space + 2) + "FunctionName: " + FunctionName);
+        Debug.Log(new string(' ', space) + "Function:");
+        Debug.Log(new string(' ', space + 2) + "FunctionName: " + FunctionName);
         Args?.Show(space + 2);
-        Console.WriteLine(new string(' ', space + 2) + "Return Type: " + Type.ToString());
+        Debug.Log(new string(' ', space + 2) + "Return Type: " + Type.ToString());
     }
 }
 
@@ -729,6 +733,6 @@ public class Pointer : Node
 
     public void Show(int space = 0)
     {
-        Console.WriteLine(new string(' ', space) + "Pointer: " + pointer);
+        Debug.Log(new string(' ', space) + "Pointer: " + pointer);
     }
 }

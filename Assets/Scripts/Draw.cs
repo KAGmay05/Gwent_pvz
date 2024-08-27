@@ -78,6 +78,7 @@ public class Draw : MonoBehaviour
   public GameObject almanaqPlantas;
   public GameObject almanaqZombies;
   public GameObject info;
+ 
 
   void Start()
   {
@@ -93,6 +94,7 @@ public class Draw : MonoBehaviour
     canvasinfo.alpha = 0;
     canvasinfo.interactable = false;
     canvasinfo.blocksRaycasts = false;
+    
     Panel();
 
     cards.Add(guisantralladora);

@@ -27,6 +27,6 @@ public class scene : MonoBehaviour
             lines[i] = lines[i].TrimStart('0','1','2','3','4','5','6','7','8','9',' ','\t');
             lines[i] =$"{i+1:D3} {lines[i]}";
         }
-        columnText.text = String.Join("\n",lines);
+        columnText.text = string.Join("\n",lines);
     }
 }

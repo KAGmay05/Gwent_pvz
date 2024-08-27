@@ -1,17 +1,20 @@
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
 using System.Runtime.CompilerServices;
-
-public class Lexer
+public class Lexer : MonoBehaviour
 {
-    private readonly List<Token> Tokens = new List<Token>();
-    private static Dictionary<string,Token> keywords = new Dictionary<string, Token>();
-    private string Input{get;}
-    private int start = 0;
-    private int current = 0;
-    private int line = 1;
-    public Lexer(string input)
+     readonly List<Token> Tokens = new List<Token>();
+     static Dictionary<string,Token> keywords = new Dictionary<string, Token>();
+    List<string> Errors = new List<string>();
+     string Input{get;}
+     int start = 0;
+     int current = 0;
+     int line = 1;
+    public Lexer(string input, List<string>errors)
     {
         Input=input;
-
+        Errors = errors;
         keywords.Add("while", new Token(TokenType.WHILE,"while","while",0,0));
         keywords.Add("for", new Token(TokenType.FOR,"for","for",0,0));
         keywords.Add("in", new Token(TokenType.IN,"in","in",0,0));
@@ -66,12 +69,19 @@ public class Lexer
                 start = current;
                 ScanToken();
             }
+            foreach(var token in Tokens)
+            {
+                if (token.Type== TokenType.SOURCE)
+                {
+                    Debug.Log($"{token.Lexeme} es el nombre del token");
+                }
+            }
             Tokens.Add(new Token(TokenType.EOF, "", "" , line, current));
             return Tokens;
         }
         catch (Error ex)
         {
-            Console.WriteLine($"Lexic error: {ex.Message}");
+            Errors.Add("Lexic error" + ex.Message);
             throw;
         }
     }
@@ -150,7 +160,7 @@ public class Lexer
             default:
             if(IsDigit(c)) Number();
             else if(IsAlpha(c)) Identifier();
-            else throw new Error(line + " Unexpected character." + start + " " + current);
+            else Errors.Add(line +" " + "Unexepected character." + start + " " + current);
             break;
         }
     }
@@ -189,7 +199,7 @@ public class Lexer
         }
         if(IsAtTheEnd())
         {
-            throw new Error($"{line}: Unfinished string.");
+            Errors.Add($"{line}: Unfinished string.");
         }
         Advance();
         string value = Input.Substring(start+1,current-start-2);
@@ -207,7 +217,7 @@ public class Lexer
             Advance();
             while(IsDigit(Peek())) Advance();
         }
-        AddToken(TokenType.NUMBER,Double.Parse(Input.Substring(start,current-start)));
+        AddToken(TokenType.NUMBER,System.Double.Parse(Input.Substring(start,current-start)));
     }
     bool IsAlpha(char c)
     {
@@ -233,9 +243,10 @@ public class Lexer
     {
         AddToken(type,""); //Revisar
     }
-    void AddToken(TokenType type, Object literal)
+    void AddToken(TokenType type, System.Object literal)
     {
         string text = Input.Substring(start,current-start);
         Tokens.Add(new Token(type,text,literal,line,current/line));
     }
 }
+

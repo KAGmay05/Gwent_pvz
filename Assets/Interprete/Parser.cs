@@ -1,16 +1,17 @@
-﻿using System.Data.Common;
-using System.Diagnostics;
-using System.Linq.Expressions;
-using System.Text.RegularExpressions;
-using System.Xml;
+using System.Collections;
+using System.Collections.Generic;
+using System.Runtime.CompilerServices;
+using UnityEngine;
 
-public class Parser
+public class Parser : MonoBehaviour
 {
-    private List<Token> Tokens{get;}
-    private int current = 0;
-    public Parser(List<Token> tokens)
+     List<Token> Tokens{get;}
+    List<string> Errors = new List<string>();
+     int current = 0;
+    public Parser(List<Token> tokens, List<string>errors)
     {
         Tokens = tokens;
+        Errors= errors;
     }
     public Node Parse()
     {
@@ -20,7 +21,7 @@ public class Parser
             if(Match(TokenType.CARD))
             {
                 Consume(TokenType.LEFT_BRACE,"Expected '{' after card");
-                Program.Cards.Add(ParseCard());
+                Program.CardIs.Add(ParseCard());
                 Consume(TokenType.RIGHT_BRACE,"Expected '}' after card declaration");
             }
             else if(Match(TokenType.EFFECT))
@@ -31,15 +32,15 @@ public class Parser
             }
             else
             {
-                throw new Error($"'{Peek().Lexeme}' in {Peek().Line}: Card or Effect expected.");
+                Errors.Add($"'{Peek().Lexeme}' in {Peek().Line}: Card or Effect expected.");
             }
         }
         return Program;
     }
 
-    Card ParseCard()
+    CardI ParseCard()
     {
-        Card card = new Card();
+        CardI card = new CardI();
         int[] counter = new int[6];
         while(!Check(TokenType.RIGHT_BRACE) && !IsAtEnd())
         {
@@ -94,21 +95,21 @@ public class Parser
             }
             else
             {
-                throw new Error($"'{Peek().Lexeme}' in {Peek().Line}: Invalid Card property.");
+                Errors.Add($"'{Peek().Lexeme}' in {Peek().Line}: Invalid Card property.");
             }
         }
-        if(counter[0]<1) throw new Error("A Type property is missing from card");
-        else if(counter[0]>1) throw new Error("Only one Type is allowed");
-        if(counter[1]<1) throw new Error("A Name property is missing from card");
-        else if(counter[1]>1) throw new Error("Only one Name is allowed");
-        if(counter[2]<1) throw new Error("A Faction property is missing from card");
-        else if(counter[2]>1) throw new Error("Only one Faction is allowed");
-        if(counter[3]<1) throw new Error("A Power property is missing from card");
-        else if(counter[3]>1) throw new Error("Only one Power is allowed");
-        if(counter[4]<1) throw new Error("A Range property is missing from card");
-        else if(counter[4]>1) throw new Error("Only one Range is allowed");
-        if(counter[5]<1) throw new Error("An OnActivation property is missing from card");
-        else if(counter[5]>1) throw new Error("Only one OnActivation is allowed");
+        if(counter[0]<1) Errors.Add("A Type property is missing from card");
+        else if(counter[0]>1) Errors.Add("Only one Type is allowed");
+        if(counter[1]<1) Errors.Add("A Name property is missing from card");
+        else if(counter[1]>1) Errors.Add("Only one Name is allowed");
+        if(counter[2]<1) Errors.Add("A Faction property is missing from card");
+        else if(counter[2]>1) Errors.Add("Only one Faction is allowed");
+        if(counter[3]<1) Errors.Add("A Power property is missing from card");
+        else if(counter[3]>1) Errors.Add("Only one Power is allowed");
+        if(counter[4]<1) Errors.Add("A Range property is missing from card");
+        else if(counter[4]>1) Errors.Add("Only one Range is allowed");
+        if(counter[5]<1) Errors.Add("An OnActivation property is missing from card");
+        else if(counter[5]>1) Errors.Add("Only one OnActivation is allowed");
         return card;
     }
 
@@ -139,14 +140,14 @@ public class Parser
             }
             else
             {
-                throw new Error($"'{Peek().Lexeme}' in {Peek().Line}: Invalid Effect property.");
+                Errors.Add($"'{Peek().Lexeme}' in {Peek().Line}: Invalid Effect property.");
             }
         }
-        if(counter[0]<1) throw new Error("A Name property is missing from effect");
-        else if(counter[0]>1) throw new Error("Only one Name is allowed");
-        if(counter[1]>1) throw new Error("Only one Params is allowed");
-        if(counter[2]<1) throw new Error("An Action property is missing from effect");
-        else if(counter[2]>1) throw new Error("Only one Action is allowed");
+        if(counter[0]<1) Errors.Add("A Name property is missing from effect");
+        else if(counter[0]>1) Errors.Add("Only one Name is allowed");
+        if(counter[1]>1) Errors.Add("Only one Params is allowed");
+        if(counter[2]<1) Errors.Add("An Action property is missing from effect");
+        else if(counter[2]>1) Errors.Add("Only one Action is allowed");
         return effect;
     }
 
@@ -189,7 +190,7 @@ public class Parser
                 {
                     Consume(TokenType.COLON,"Expected ':'");
                     selector = ParseSelector();
-                    if(selector.Source == null) throw new Error($"'{Peek().Lexeme}' in {Peek().Line}: Missing field");
+                    if(selector.Source == null) Errors.Add($"'{Peek().Lexeme}' in {Peek().Line}: Missing field");
                     //Consume(TokenType.COMMA,"Expected ','");
                 }
                 else
@@ -211,7 +212,7 @@ public class Parser
             }
             else
             {
-                throw new Error($"'{Peek().Lexeme}' in {Peek().Line}: Invalid OnActivation field.");
+                Errors.Add($"'{Peek().Lexeme}' in {Peek().Line}: Invalid OnActivation field.");
             }
         }
         Consume(TokenType.RIGHT_BRACE,"Expected '}' after OnActivation declaration");
@@ -260,7 +261,7 @@ public class Parser
                         }
                         else
                         {
-                            throw new Error($"'{Peek().Lexeme}' in {Peek().Line}: Duplicate");
+                            Errors.Add($"'{Peek().Lexeme}' in {Peek().Line}: Duplicate");
                         }
                     }
                     else
@@ -272,7 +273,7 @@ public class Parser
                         }
                         else
                         {
-                            throw new Error($"'{Peek().Lexeme}' in {Peek().Line}: Duplicate");
+                            Errors.Add($"'{Peek().Lexeme}' in {Peek().Line}: Duplicate");
                         }
                     }
                 }
@@ -293,7 +294,7 @@ public class Parser
             }
             Consume(TokenType.RIGHT_BRACE,"Expected '}'");
         }
-        if(name == null) throw new Error($"'{Peek().Lexeme}' in {Peek().Line}: No name");
+        if(name == null) Errors.Add($"'{Peek().Lexeme}' in {Peek().Line}: No name");
         return new OAEffect(name,assignments);
     }
 
@@ -310,19 +311,65 @@ public class Parser
                 Consume(TokenType.COLON,"Expected ':'");
                 if(source == null)
                 {
-                    if(Convert.ToString(Peek().Literal) == "deck"||Convert.ToString(Peek().Literal) == "otherDeck"||Convert.ToString(Peek().Literal) == "hand"||Convert.ToString(Peek().Literal) == "otherHand"||Convert.ToString(Peek().Literal) == "field"||Convert.ToString(Peek().Literal) == "otherField"||Convert.ToString(Peek().Literal) == "parent"||Convert.ToString(Peek().Literal) == "board")
+                    if(System.Convert.ToString(Peek().Literal) == "deck")
                     {
-                        Console.WriteLine("en el if del delectr");
                         source = Advance().Lexeme;
+                        source = "deck";
                     }
+                    else if(System.Convert.ToString(Peek().Literal) == "board")
+                    {
+                         Debug.Log("en el if del delectr");
+                         source = Advance().Lexeme;
+                         source = "board";
+                         Debug.Log($"{source} es lo q hay en sorce");
+                    }
+                    else if (System.Convert.ToString(Peek().Literal) == "otherDeck")
+                    {
+                        source = Advance().Lexeme;
+                        source = "otherDeck";
+                    }
+                    else if(System.Convert.ToString(Peek().Literal) == "hand")
+                    {
+                        source = Advance().Lexeme;
+                        source = "hand";
+                    }
+                    else if (System.Convert.ToString(Peek().Literal) == "otherHand")
+                    {
+                        source = Advance().Lexeme;
+                        source = "otherHand";
+                    }
+                    else if(System.Convert.ToString(Peek().Literal) == "field")
+                    {
+                        source = Advance().Lexeme;
+                        source = "field";
+                    }
+                    else if(System.Convert.ToString(Peek().Literal) == "otherField")
+                    {
+                        source = Advance().Lexeme;
+                        source = "otherfield";
+                    }
+                    else if(System.Convert.ToString(Peek().Literal) == "parent")
+                    {
+                        source = Advance().Lexeme;
+                        source = "parent";
+                    }
+                    // if(System.Convert.ToString(Peek().Literal) == "deck"||System.Convert.ToString(Peek().Literal) == "otherDeck"||System.Convert.ToString(Peek().Literal) == "hand"||System.Convert.ToString(Peek().Literal) == "otherHand"||System.Convert.ToString(Peek().Literal) == "field"||System.Convert.ToString(Peek().Literal) == "otherField"||System.Convert.ToString(Peek().Literal) == "parent"||System.Convert.ToString(Peek().Literal) == "board")
+                    // {
+                    //     Debug.Log("en el if del delectr");
+                    // //    if(!IsAtEnd()) current++;
+                    //     // Debug.Log($"{Advance().Lexeme} lo q hay en previous");
+                    //     source = Advance().Lexeme;
+                    //     source = "board";
+                    //     Debug.Log($"{source} es lo q hay en sorce");
+                    // }
                     else
                     {
-                        throw new Error("");
+                        Errors.Add("");
                     }
                 }
                 else
                 {
-                    throw new Error($"'{Peek().Lexeme}' in {Peek().Line}: Duplicate");
+                    Errors.Add($"'{Peek().Lexeme}' in {Peek().Line}: Duplicate");
                 }
                 if(!Check(TokenType.RIGHT_BRACE)) Consume(TokenType.COMMA,"Expected ','");
             }
@@ -332,10 +379,11 @@ public class Parser
                 if(single == null)
                 {
                     single = new Single(Advance());
+                    Debug.Log($"{single.Value} este es single");
                 }
                 else
                 {
-                    throw new Error($"'{Peek().Lexeme}' in {Peek().Line}: Duplicate");
+                    Errors.Add($"'{Peek().Lexeme}' in {Peek().Line}: Duplicate");
                 }
                 if(!Check(TokenType.RIGHT_BRACE)) Consume(TokenType.COMMA,"Expected ','");
             }
@@ -348,17 +396,17 @@ public class Parser
                 }
                 else
                 {
-                    throw new Error($"'{Peek().Lexeme}' in {Peek().Line}: Duplicate");
+                    Errors.Add($"'{Peek().Lexeme}' in {Peek().Line}: Duplicate");
                 }
                 if(!Check(TokenType.RIGHT_BRACE)) Consume(TokenType.COMMA,"Expected ','");
             }
             else
             {
-                throw new Error($"'{Peek().Lexeme}' in {Peek().Line}: Invalid field");
+                Errors.Add($"'{Peek().Lexeme}' in {Peek().Line}: Invalid field");
             }
         }
         Consume(TokenType.RIGHT_BRACE,"Expected '}' after Selector declaration");
-        if(single == null || predicate == null) throw new Error($"'{Peek().Lexeme}' in {Peek().Line}: Missing field");
+        if(single == null || predicate == null) Errors.Add($"'{Peek().Lexeme}' in {Peek().Line}: Missing field");
         return new Selector(source,single,predicate);
     }
 
@@ -398,11 +446,11 @@ public class Parser
             }
             else
             {
-                throw new Error("");
+                Errors.Add("");
             }
         }
         Consume(TokenType.RIGHT_BRACE,"Expected '}'");
-        if(expression == null || selector == null) throw new Error("");
+        if(expression == null || selector == null) Errors.Add("");
         return new PostAction(expression,selector);
     }
 
@@ -410,7 +458,7 @@ public class Parser
     {
         Consume(TokenType.LEFT_PAREN,"Expected '('");
         Variable unit = ParseVariable();
-        unit.type = Variable.Type.CARD;
+        unit.type = Variable.Type.CARDI;
         Consume(TokenType.RIGHT_PAREN,"Expected ')'");
         Consume(TokenType.EQUAL_GREATER,"Expected '=>'");
         Expression expression = ParseExpression();
@@ -446,7 +494,7 @@ public class Parser
                     varType = function.Type;
                     variableComp.args.Arguments.Add(function);
                     foreach(var arg in variableComp.args.Arguments)
-                    Console.WriteLine($"En la lista esta {arg} y solo eso y function es {function}");
+                    Debug.Log($"En la lista esta {arg} y solo eso y function es {function}");
                 }
                 else
                 {
@@ -521,14 +569,14 @@ public class Parser
         else if(Check(TokenType.IDENTIFIER))
         {
             Variable variable = ParseVariable();
-            Console.WriteLine(Peek().Lexeme);
+            Debug.Log(Peek().Lexeme);
             if(variable is VariableComp && Check(TokenType.SEMICOLON))
             {
                 VariableComp v = (variable as VariableComp)!;
                 if(v.args.Arguments[v.args.Arguments.Count-1].GetType() == typeof(FunctionDeclaration))
                 {
                     FunctionDeclaration function = (v.args.Arguments[v.args.Arguments.Count-1] as FunctionDeclaration)!;
-                    if(function.Type != Variable.Type.VOID) throw new Error("");
+                    if(function.Type != Variable.Type.VOID) Errors.Add("");
                 }
                 else
                 {
@@ -548,7 +596,8 @@ public class Parser
         }
         else
         {
-            throw new Error("");
+            Errors.Add("");
+            throw new Error(" ");
         }
     }
 
@@ -625,7 +674,7 @@ public class Parser
             }
             else
             {
-                throw new Exception("Expected type after parameter name");
+                throw new System.Exception("Expected type after parameter name");
                 //return variables
             }
         }
@@ -641,13 +690,13 @@ public class Parser
             var result = Equality();
             /*if (!IsAtEnd())
             {
-                throw new Error($"Unexpected token '{Peek().Lexeme}' at line {Peek().Line}");
+                Errors.Add($"Unexpected token '{Peek().Lexeme}' at line {Peek().Line}");
             }*/
             return result;
         }
         catch(Error exception)
         {
-            Console.WriteLine($"Semantical error:{exception.Message}");
+            Debug.Log($"Semantical error:{exception.Message}");
             throw;
         }
     }
@@ -739,7 +788,7 @@ public class Parser
     {
         if(Match(TokenType.FALSE)) return new Bool(false);
         if(Match(TokenType.TRUE)) return new Bool(true);
-        if(Match(TokenType.NUMBER)) return new Number(Convert.ToInt32(Previous().Literal));
+        if(Match(TokenType.NUMBER)) return new Number(System.Convert.ToInt32(Previous().Literal));
         if(Match(TokenType.STRING))
         {
             return new String(Previous().Lexeme.Substring(1,Previous().Lexeme.Length-2));
@@ -754,7 +803,8 @@ public class Parser
         {
             return ParseVariable();
         }
-        throw new Error($"'{Peek().Lexeme}' in line {Peek().Line}: Unexpected token.");
+        Errors.Add($"'{Peek().Lexeme}' in line {Peek().Line}: Unexpected token.");
+        throw new Error(" ");
     }
 
     bool Match(TokenType type)
@@ -802,8 +852,9 @@ public class Parser
 
     Token Consume(TokenType type, string message)
     {
-        Console.WriteLine(Peek().Type + " " + Peek().Lexeme);
+        Debug.Log(Peek().Type + " " + Peek().Lexeme);
         if(Check(type)) return Advance();
-        throw new Error($"'{Peek().Lexeme}' in line {Peek().Line}: {message}");
+        Errors.Add($"'{Peek().Lexeme}' in line {Peek().Line}: {message}");
+        throw new Error(" ");
     }
 }

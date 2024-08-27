@@ -1,5 +1,10 @@
-public class Error : Exception
-{
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+
+    public class Error : System.Exception
+    {
     public string Mess { get; private set; }
     
 
@@ -11,10 +16,10 @@ public class Error : Exception
 
     public string Report()
     {
-        return $" Error: {Message}";
+        return $" Error: {Mess}";
     }
 }
-public class RunTimeError : Exception
+public class RunTimeError : System.Exception
 {
     public Token token;
     public RunTimeError(Token token, string message) : base(message)
@@ -28,3 +33,4 @@ public enum ErrorType
 {
     LEXICAL, SYNTAX, SEMANTIC
 }
+

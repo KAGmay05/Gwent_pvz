@@ -8,7 +8,8 @@ using UnityEngine;
 public class GameManager : MonoBehaviour
 {
 
-
+    public GameObject graveyard;
+	public Draw draw;
 	public Text score;
 	public GameObject buttom;
 	public turns turns;
@@ -19,13 +20,14 @@ public class GameManager : MonoBehaviour
 	public Text winner;
 	public Text plantspoints;
 	public Text zombiespoints;
+	public GameObject playerAum;
+	public GameObject zombiesAum;
 	public GameObject playerCaC;
 	public GameObject playerArq;
 	public GameObject playerAsd;
 	public GameObject enemyCaC;
 	public GameObject enemyArq;
 	public GameObject enemyAsd;
-	public GameObject deckzone;
 	public GameObject playerArea;
 	public GameObject enemyArea;
 	public int totalPlantspoints = 0;
@@ -33,7 +35,7 @@ public class GameManager : MonoBehaviour
 	public bool zombieWin;
 	public bool plantWin;
 	public bool tie;
-
+    public GameObject weatherZone;
 
 	void Update()
 	{
@@ -179,5 +181,193 @@ public class GameManager : MonoBehaviour
 		}
 
 	}
-
+	
+	public int TriggerPlayer()
+	{
+     bool playerturn = GameObject.Find("TurnSystem").GetComponent<turns>().isPlayerTurn;
+	 if(playerturn) return 1;
+	 else return 0;
+	}
+	public List<Card> CardsOnBoard ()
+	{
+     List<Card> cardsOnBoard = new List<Card>();
+	 foreach(Transform child in playerAsd.transform)
+	 {
+      CardDisplay card = child.GetComponent<CardDisplay>();
+	  cardsOnBoard.Add(card.card);
+	 }
+	 foreach(Transform child in playerCaC.transform) 
+	 {
+		CardDisplay card = child.GetComponent<CardDisplay>();
+		cardsOnBoard.Add(card.card);
+	 }
+	 foreach(Transform child in enemyArq.transform) 
+	 {
+		CardDisplay card = child.GetComponent<CardDisplay>();
+		cardsOnBoard.Add(card.card);
+	 }
+	 foreach(Transform child in enemyAsd.transform) 
+	 {
+		CardDisplay card = child.GetComponent<CardDisplay>();
+		cardsOnBoard.Add(card.card);
+	 }
+	 foreach(Transform child in enemyCaC.transform) 
+	 {
+		CardDisplay card = child.GetComponent<CardDisplay>();
+		cardsOnBoard.Add(card.card);
+	 }
+	 foreach(Transform child in weatherZone.transform)
+	 {
+		CardDisplay card = child.GetComponent<CardDisplay>();
+		cardsOnBoard.Add(card.card);
+	 } 
+	 foreach(Transform child in playerAum.transform)
+	 {
+		CardDisplay card = child.GetComponent<CardDisplay>();
+		cardsOnBoard.Add(card.card);
+	 } 
+	 foreach(Transform child in zombiesAum.transform)
+	 {
+		CardDisplay card = child.GetComponent<CardDisplay>();
+		cardsOnBoard.Add(card.card);
+	 } 
+	 foreach(Transform child in playerArq.transform)
+	 {
+		CardDisplay card = child.GetComponent<CardDisplay>();
+		cardsOnBoard.Add(card.card);
+	 }
+	 return cardsOnBoard;
+	}
+	public List<Card> HandOfPlayer(int player)
+	{
+		List<Card> playerCards = new List<Card>();
+		List<Card> enemyCards = new List<Card>();
+		if(player == 1)
+		{
+			foreach(Transform child in playerArea.transform)
+	         {
+	            CardDisplay card = child.GetComponent<CardDisplay>();
+		        playerCards.Add(card.card);
+	         }  
+			return playerCards;
+		}
+		else
+		{
+         foreach(Transform child in enemyArea.transform)
+	      {
+            CardDisplay card = child.GetComponent<CardDisplay>();
+            enemyCards.Add(card.card);
+	      } 
+		 return enemyCards;
+		}
+	}
+	public List<Card> FieldOfPlayer( int player)
+	{       List<Card> cardsP = new List<Card>();    
+	        List<Card> cardsZ = new List<Card>();
+		    Card[] cardsAsd = playerAsd.GetComponentsInChildren<Card>();
+	        Card[] cardsCaC = playerCaC.GetComponentsInChildren<Card>();
+	        Card[] cardsArq = playerArq.GetComponentsInChildren<Card>();
+			Card[] cardsZombiesAsd = enemyAsd.GetComponentsInChildren<Card>();
+	        Card[] cardsZombiesCaC = enemyCaC.GetComponentsInChildren<Card>();
+	        Card[] cardsZombiesArq = enemyArq.GetComponentsInChildren<Card>();
+		
+		if(player == 1)
+		{
+			foreach(Transform child in playerAsd.transform)
+	         {
+               CardDisplay card = child.GetComponent<CardDisplay>();
+	           cardsP.Add(card.card);
+	         }
+	        foreach(Transform child in playerCaC.transform) 
+	        {
+              CardDisplay card = child.GetComponent<CardDisplay>();
+              cardsP.Add(card.card);
+	        }
+	       foreach(Transform child in playerArq.transform)
+	        {
+              CardDisplay card = child.GetComponent<CardDisplay>();
+              cardsP.Add(card.card);
+	        }
+			foreach(var card in cardsP) Debug.Log(card);
+			return cardsP;
+		}
+		else
+		{
+			foreach(Transform child in enemyArq.transform) 
+	 {
+		CardDisplay card = child.GetComponent<CardDisplay>();
+		cardsZ.Add(card.card);
+	 }
+	 foreach(Transform child in enemyAsd.transform) 
+	 {
+		CardDisplay card = child.GetComponent<CardDisplay>();
+		cardsZ.Add(card.card);
+	 }
+	 foreach(Transform child in enemyCaC.transform) 
+	 {
+		CardDisplay card = child.GetComponent<CardDisplay>();
+		cardsZ.Add(card.card);
+	 }
+			foreach(var card in cardsZ) Debug.Log(card);
+			return cardsZ;
+		}
+	}
+	public List<Card> GraveyardOfPlayer(int player)
+	{
+		List<Card> cardsP = new List<Card>();
+		List<Card> cardsZ = new List<Card>();
+		if(player == 1)
+		{
+			foreach(Transform child in graveyard.transform)
+			{
+				CardDisplay card = child.GetComponent<CardDisplay>();
+				if(card.faction == "plantas")
+				{
+					cardsP.Add(card.card);
+				}
+			}
+			return cardsP;
+		}
+		else
+		{
+			foreach(Transform child in graveyard.transform)
+			{
+				CardDisplay card = child.GetComponent<CardDisplay>();
+				if(card.faction == "zombies")
+				{
+					cardsZ.Add(card.card);
+				}
+			}
+			return cardsZ;
+		}
+	}
+	public List<Card> DeckofPlayer(int player)
+	{
+		List<Card> cardsP = new List<Card>();
+		List<Card> cardsZ = new List<Card>();
+		if(player == 1)
+		{
+			foreach(var obj in draw.cards)
+		{
+			CardDisplay cardDisplay = obj.GetComponent<CardDisplay>();
+			if (cardDisplay != null)
+			{
+				cardsP.Add(cardDisplay.card);
+			}
+        
+		 }
+		
+		return cardsP;
+		}
+		else
+		{
+		foreach(var obj in draw.enemycards)
+		{
+           CardDisplay cardDisplay = obj.GetComponent<CardDisplay>();
+		   if (cardDisplay != null) cardsZ.Add(cardDisplay.card);
+		}
+		return cardsZ;
+		}
+		
+	}
 }

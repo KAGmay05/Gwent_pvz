@@ -5,10 +5,16 @@ using UnityEngine;
 
 public class Semantic : MonoBehaviour
 {
-Dictionary<string, Variable.Type> variables = new Dictionary<string, Variable.Type>();
- Dictionary<string, Effect> effects = new Dictionary<string, Effect>();
- Dictionary<string, CardI> cards = new Dictionary<string, CardI>();
- Stack<Dictionary<string, Variable.Type>> scopes = new Stack<Dictionary<string, Variable.Type>>();
+public Dictionary<string, object> objectVars = new Dictionary<string, object>();
+public Dictionary<string, Variable.Type> variables = new Dictionary<string, Variable.Type>();
+ public Dictionary<string, Effect> effects = new Dictionary<string, Effect>();
+ public Dictionary<string, CardI> cards = new Dictionary<string, CardI>();
+ public Stack<Dictionary<string, Variable.Type>> scopes = new Stack<Dictionary<string, Variable.Type>>();
+ public List<string> Errors = new List<string>();
+ public Semantic(List<string> errors)
+ {
+  Errors = errors;
+ }
  public void CheckNode(Node node)
  
     {
@@ -35,17 +41,21 @@ Dictionary<string, Variable.Type> variables = new Dictionary<string, Variable.Ty
     {
      PushScope();
      CheckName(card.Name.name);
+     if(card.Name.name is Number)
+     {
+        Errors.Add("Card name must be a string");
+     }
      string cardname = ((String)card.Name.name).Value;
      if(cards.ContainsKey(cardname))
      {
-        throw new SemanticError("Card already defined");
+        Errors.Add("Card already defined");
      }
      else cards[cardname] = card;
      Variable cardVar = new Variable(new Token(TokenType.IDENTIFIER, cardname, cardname, 0, 0));
      cardVar.type = Variable.Type.CARDI;
      if(IsVariableDeclared(cardname))
      {
-       throw new SemanticError($"A local variable named {cardname} is already defined");
+       Errors.Add($"A local variable named {cardname} is already defined");
      }
      else variables[cardname] = cardVar.type;
      CheckCardType(card.Type.type);
@@ -59,11 +69,11 @@ Dictionary<string, Variable.Type> variables = new Dictionary<string, Variable.Ty
             string range = ((String)expr).Value;
             if(range != "Cuerpo a cuerpo" && range != "Arquero" && range != "Asedio" && range != "Melee" && range != "Ranged" && range != "Siege")
             {
-                throw new SemanticError($"Range : {range} is not a valid range");
+                Errors.Add($"Range : {range} is not a valid range");
             }
         }
      }
-     else throw new SemanticError("Card must have a range");
+     else Errors.Add("Card must have a range");
      if(card.OnActivation != null)
      {
         foreach(var element in card.OnActivation.Elements)
@@ -71,7 +81,7 @@ Dictionary<string, Variable.Type> variables = new Dictionary<string, Variable.Ty
             CheckOnActivationE(element);
         }
      }
-     else throw new SemanticError("Card must have an on activation");
+     else Errors.Add("Card must have an on activation");
      PopScope();
     }
     void CheckCardPower(Expression power)
@@ -80,7 +90,7 @@ Dictionary<string, Variable.Type> variables = new Dictionary<string, Variable.Ty
       {
         if(((Number)power).Value < 0)
         {
-            throw new SemanticError("Card power must be greater than 0");
+            Errors.Add("Card power must be greater than 0");
         }
       }
       else if(power is UnaryIntergerExpression unaryIntergerExpression)
@@ -99,32 +109,39 @@ Dictionary<string, Variable.Type> variables = new Dictionary<string, Variable.Ty
             CheckVariable(variableComp);
             if(variableComp.type != Variable.Type.INT)
             {
-                throw new SemanticError("Power must be a number");
+                Errors.Add("Power must be a number");
             }
         }
         else if(variable.type != Variable.Type.INT)
         {
-            throw new SemanticError("Power must be a number");
+            Errors.Add("Power must be a number");
         }
        }
-       else throw new SemanticError("Power must be a number");
+       else Errors.Add("Power must be a number");
     }
     void CheckCardType(Expression type)
     {
         CheckName(type);
-        string trueType = ((String)type).Value;
-        if(trueType!= "Oro" && trueType!= "Plata" && trueType!= "clima" && trueType!="aumento")
+        if(type is Number)
         {
-            throw new SemanticError($"The type: {trueType} is not a valid card type");
+         Errors.Add("Card type must be a string");
+        }
+        else
+        {
+            string trueType = ((String)type).Value;
+        if(trueType!= "Oro" && trueType!= "Plata" && trueType!= "Clima" && trueType!="Aumento" && trueType != "Lider")
+        {
+            Errors.Add($"The type: {trueType} is not a valid card type");
+        }
         }
     }
     void CheckOnActivationE(OnActivationElements element)
     {
         PushScope();
         if(element.OAEffect !=null) CheckOAEffect(element.OAEffect);
-        else throw new SemanticError("On activation must have an effect");
+        else Errors.Add("On activation must have an effect");
         if(element.Selector != null) CheckSelector(element.Selector);
-        else throw new SemanticError("On activation must have a selector");
+        else Errors.Add("On activation must have a selector");
         if(element.postAction != null) CheckPostAction(element.postAction);
         PopScope();
     }
@@ -135,13 +152,10 @@ Dictionary<string, Variable.Type> variables = new Dictionary<string, Variable.Ty
      List<Node> paramsOGeffect = effects[oaEffect.Name].Params.Arguments;
      int counterParams = 0;
      int counterAsg = 0;
-     if(!effects.ContainsKey(oaEffect.Name) )
+     if(effects.ContainsKey(oaEffect.Name) )
      {
-      throw new SemanticError("Effect not defined");
-     }
-     else 
-     {
-        foreach(var asg in assignments)
+      Debug.Log("entra a lo contiene en el diccioonario");
+      foreach(var asg in assignments)
         {
             asg.Left.type = TypeExpr(asg.Right);
             foreach(var param in paramsOGeffect)
@@ -157,7 +171,13 @@ Dictionary<string, Variable.Type> variables = new Dictionary<string, Variable.Ty
             }
         }
         if(paramsOGeffect.Count != counterParams || assignments.Count != counterAsg)
-        throw new SemanticError("OnActivation effect must have the same number of parameters as the effect");
+        Errors.Add("OnActivation effect must have the same number of parameters as the effect");
+      
+     }
+     else 
+     {
+        Debug.Log("entra a q NOOOOOOOOOOOOOOOOOOOOOO lo contiene en el diccioonario");
+        Errors.Add("Effect not defined");
      }
 
      PopScope();
@@ -171,9 +191,9 @@ Dictionary<string, Variable.Type> variables = new Dictionary<string, Variable.Ty
     {
         if(source == "deck")
         Debug.Log("Source: deck");
-        else if(source != "board" && source != "hand" && source!= "otherhand" && source != "deck" && source != "otherdeck"&& source != "field" && source != "otherfield" )
+        else if(source != "parent" && source != "board" && source != "hand" && source!= "otherhand" && source != "deck" && source != "otherdeck"&& source != "field" && source != "otherfield" )
         {
-            throw new SemanticError($"Source: {source} is not valid");
+            Errors.Add($"Source: {source} is not valid");
         }
         
     }
@@ -182,34 +202,44 @@ Dictionary<string, Variable.Type> variables = new Dictionary<string, Variable.Ty
      PushScope();
      if(predicate.Var.type != Variable.Type.CARDI)
      {
-        throw new SemanticError("Predicate must be of type card");
+        Errors.Add("Predicate must be of type card");
      }
      Debug.Log($"{predicate.Var.type} este es el tipo del predicado");
      variables[predicate.Var.Value] = predicate.Var.type;
      CheckExpression(predicate.Condition);
      PopScope();
     }
-    void CheckPostAction(PostAction postAction)
+    void CheckPostAction(List<PostAction> postAction)
     {
-     if(postAction.Selector != null) CheckSelector(postAction.Selector);
-     CheckName(postAction.Type);
+     foreach(var postAc in postAction)
+     {
+        if(postAc.Selector != null) CheckSelector(postAc.Selector);
+        CheckName(postAc.Type);
+     }
     }
     public void CheckEffect(Effect effect)
     {
         Debug.Log("esta en checking effect");
         PushScope();
         CheckName(effect.Name.name);
-        string effectname = ((String)effect.Name.name).Value;
+        if(effect.Name.name is Number)
+        {
+            Errors.Add("Effect name must be a string");
+        }
+        else
+         {
+            string effectname = ((String)effect.Name.name).Value;
+        
         if(effects.ContainsKey(effectname))
         {
-           throw new SemanticError("Effect already defined");
+           Errors.Add("Effect already defined");
         }
         else effects[effectname] = effect;
         Variable effectVar = new Variable(new Token(TokenType.IDENTIFIER, effectname, effectname, 0, 0));
         effectVar.type = Variable.Type.EFFECT;
         if(IsVariableDeclared(effectname))
         {
-            throw new SemanticError($"A local variable or function named {effectname} is already defined");
+            Errors.Add($"A local variable or function named {effectname} is already defined");
         }
         else variables[effectname] = effectVar.type;        
         if (effect.Params != null)
@@ -226,8 +256,10 @@ Dictionary<string, Variable.Type> variables = new Dictionary<string, Variable.Ty
                  }
             }
         CheckAction(effect.Action);
-        PopScope();
         }
+        PopScope();
+         }
+        
     }
     void CheckName(Expression name)
     {
@@ -236,8 +268,9 @@ Dictionary<string, Variable.Type> variables = new Dictionary<string, Variable.Ty
     {
       if(name == null || name is String stringName && string.IsNullOrWhiteSpace(stringName.Value))
         {
-           throw new SemanticError("Name cannot be null or empty");
+           Errors.Add("Name cannot be null or empty");
         }
+
     }
     else if(name is BinaryStringExpression binaryStringExpression)
     {
@@ -255,15 +288,21 @@ Dictionary<string, Variable.Type> variables = new Dictionary<string, Variable.Ty
             CheckVariable(variableComp);
             if(variableComp.type != Variable.Type.STRING)
             {
-                throw new SemanticError("Name must be a string");
+                Errors.Add("String expected");
+      
             }
         }
         else if(variable.type != Variable.Type.STRING)
         {
-            throw new SemanticError("Name must be a string");
+            Errors.Add("String expected");
+
         }
     }
-    else throw new SemanticError("Name must be a string");
+    else 
+    {
+        name = new Number(7);
+        Errors.Add("String expected");
+    }
     }
  public void CheckExpression(Expression expr)
  {
@@ -271,7 +310,7 @@ Dictionary<string, Variable.Type> variables = new Dictionary<string, Variable.Ty
     {
         if(!IsVariableDeclared(variable.Value))
         {
-            throw new SemanticError($"Variable '{variable.Value}' is not declared.");
+            Errors.Add($"Variable '{variable.Value}' is not declared.");
         }
     }
     else if (expr is Binary binary)
@@ -329,7 +368,7 @@ Dictionary<string, Variable.Type> variables = new Dictionary<string, Variable.Ty
  {
     if(!IsVariableDeclared(variable.Value))
     {
-        throw new SemanticError($"Variable '{variable.Value}' is not declared.");
+        Errors.Add($"Variable '{variable.Value}' is not declared.");
     }
     if(variable is VariableComp variableComp)
     {
@@ -396,12 +435,12 @@ Dictionary<string, Variable.Type> variables = new Dictionary<string, Variable.Ty
              Debug.Log($"La variable {variable.Value} tiene tipo {variables[variable.Value]}");
              if(type != variables[variable.Value])
              {
-              throw new SemanticError($"Type mismatch, type expected {type} and type declared {variable.type}");
+              Errors.Add($"Type mismatch, type expected {type} and type declared {variable.type}");
              }
             //  if(varia)
             //  DefineVariable(assignment.Left);
              }
-            else throw new SemanticError($"Variable: {variable.Value} has not been defined in this scope");
+            else Errors.Add($"Variable: {variable.Value} has not been defined in this scope");
         }
         
     }
@@ -442,13 +481,13 @@ Dictionary<string, Variable.Type> variables = new Dictionary<string, Variable.Ty
      Debug.Log("entro a function pop");
      if(function.Args.Arguments != null && function.Args.Arguments.Any())
      {
-        throw new SemanticError("Invalid params for the function declared");
+        Errors.Add("Invalid params for the function declared");
      }
     }
     else if(function.FunctionName == "Push" || function.FunctionName == "SendBottom")
     {
         if(function.Args.GetType() != typeof(Card))
-        throw new SemanticError("Invalid params for the function declared");
+        Errors.Add("Invalid params for the function declared");
 
     }
  }
@@ -464,7 +503,8 @@ Dictionary<string, Variable.Type> variables = new Dictionary<string, Variable.Ty
     return variable.type;
     else if(expr is ExpressionGroup expressionGroup)
     return TypeExpr(expressionGroup.Exp);
-    throw new SemanticError("Invalid expression type");
+    Errors.Add("Invalid expression type");
+    return Variable.Type.NULL;
 }
  public  void DefineVariable(Variable variable)
  {
@@ -493,7 +533,8 @@ Dictionary<string, Variable.Type> variables = new Dictionary<string, Variable.Ty
         }
         else
         {
-            throw new System.Exception("No more scopes to pop.");
+            Errors.Add("No more scopes to pop.");
+            
         }
  }
 }

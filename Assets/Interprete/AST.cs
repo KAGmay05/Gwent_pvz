@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -177,18 +178,19 @@ public class OnActivationElements : Node
 {
     public OAEffect OAEffect;
     public Selector Selector;
-    public PostAction postAction;
-    public OnActivationElements(OAEffect oaEffect, Selector selector, PostAction pA)
+    public List<PostAction> postAction;
+    public OnActivationElements(OAEffect oaEffect, Selector selector, List<PostAction> PostActions)
     {
         OAEffect = oaEffect;
         Selector = selector;
-        postAction = pA;
+        postAction = PostActions;
     }
     public void Show(int space = 0)
     {
         Debug.Log(new string(' ', space) + "OnActivationElements:");
         OAEffect?.Show(space + 2);
         Selector?.Show(space + 2);
+        foreach(var postAction in postAction)
         postAction?.Show(space + 2);
     }
 }
@@ -253,11 +255,11 @@ public class Single : Node
     public bool Value;
     public Single(Token token)
     {
-        if(token.Type == TokenType.BOOL)
+        if(token.Type == TokenType.TRUE)
         {
-            if(token.Lexeme == "true")  Value = true;
-            else Value = false;
+           Value = true;
         }
+        else if(token.Type == TokenType.FALSE) Value = false;
     }
     public void Show(int space = 0)
     {
@@ -321,7 +323,7 @@ public class PostAction : Node
 public abstract class Expression : Node
 {
     public abstract void Show(int space=0);
-    public abstract object Evaluate();
+    public abstract object Evaluate(Semantic semantic, GameManager gameManager);
 }
 public class Binary : Expression
 {
@@ -334,11 +336,27 @@ public class Binary : Expression
         Operators = operators;
         Right = right;
     }
-    public override object Evaluate()
+    public override object Evaluate(Semantic semantic, GameManager gameManager)
     {
-        object leftValue = Left.Evaluate();
-        object rightValue = Right.Evaluate();
-        if(leftValue is double && rightValue is double)
+        object leftValue = Left.Evaluate(semantic, gameManager);
+        if(leftValue is Card card)
+        {
+            if(Left is VariableComp variableComp)
+            {
+                if(variableComp.args.Arguments[0] is PowerAsField)
+                {leftValue = card.power;
+                UnityEngine.Debug.Log("la lista era en 0?");
+                UnityEngine.Debug.Log(card.power);
+                }
+                if(variableComp.args.Arguments[0] is Faction)
+                {
+                    leftValue = card.faction;
+                    UnityEngine.Debug.Log(card.faction);
+                }
+            }
+        }
+        object rightValue = Right.Evaluate(semantic, gameManager);
+        if(leftValue is double && rightValue is double|| leftValue is int && rightValue is int|| leftValue is int && rightValue is Double || leftValue is Double && rightValue is int)
         {
             switch (Operators.Type)
             {
@@ -371,15 +389,21 @@ public class Binary : Expression
         else if(leftValue is string && rightValue is string)
         {
             switch (Operators.Type)
-            {
+            { 
+                case TokenType.EQUAL_EQUAL : return leftValue.Equals(rightValue);
                 case TokenType.ATSIGN : return leftValue.ToString() + rightValue.ToString();
                 case TokenType.ATSIGN_ATSIGN : return leftValue.ToString() + " " + rightValue.ToString();
                 default:
                 throw new System.InvalidOperationException("Unsupported operator: " + Operators.Lexeme);
             }
         }
-        else throw new System.InvalidOperationException("Unsupported operator: " + Operators.Lexeme);
-    }
+        
+        else 
+        {
+           UnityEngine.Debug.Log($"{leftValue} y tiene tipo {leftValue.GetType()}");
+           UnityEngine.Debug.Log($"{rightValue} y tiene tipo {rightValue.GetType()}");
+            throw new System.InvalidOperationException("Unsupported operator: " + Operators.Lexeme);
+    }}
     public override void Show(int space = 0)
     {
         Debug.Log(new string(' ', space) + "BinaryOperator: " + Operators.Lexeme);
@@ -414,9 +438,9 @@ public class Unary : Expression
         Operators = operators;
         Right = right;
     }
-    public override object Evaluate()
+    public override object Evaluate(Semantic semantic, GameManager gameManager)
     {
-        object rightValue = Right.Evaluate();
+        object rightValue = Right.Evaluate(semantic, gameManager);
 
         switch (Operators.Type)
         {
@@ -424,7 +448,11 @@ public class Unary : Expression
                 return -System.Convert.ToDouble(rightValue);
             case TokenType.BANG:
                 return !(bool)rightValue;
+            case TokenType.PLUS_PLUS:
+                return System.Convert.ToDouble(rightValue) +1;
+            
             default:
+                UnityEngine.Debug.Log($"{rightValue} y de tipo {rightValue.GetType()}");
                 throw new System.InvalidOperationException("Unsupported operator: " + Operators.Lexeme);
         }
     }
@@ -476,9 +504,9 @@ public class Variable : Expression
         }
     }
 
-    public override object Evaluate()
+    public override object Evaluate(Semantic semantic, GameManager gameManager)
     {
-        throw new System.NotImplementedException();
+        return semantic.objectVars[Value];
     }
 
     public override void Show(int space = 0)
@@ -501,6 +529,125 @@ public class VariableComp : Variable,Statement
         Debug.Log(new string(' ', space) + "VariableComp: " + Value);
         args?.Show(space + 2);
     }
+    public  object EvaluateVC(Semantic semantic, GameManager gameManager)
+    
+    {
+        object last = null;
+        foreach(var arg in args.Arguments)
+        {
+            // if(arg is FunctionDeclaration)
+            // {
+            //     last = (arg as FunctionDeclaration).GetValue(context,last);
+            // }
+            // else if(arg is Indexer)
+            // {
+            //     if(last is CardList)
+            //     {
+            //         List<Card> cards = (last as CardList).Cards;
+            //         Indexer indexer = arg as Indexer;
+            //         last = cards[indexer.index];
+            //     }
+            //     else
+            //     {
+            //         string[] range = last as string[];
+            //         Indexer indexer = arg as Indexer;
+            //         last = range[indexer.index];
+            //     }
+            // }
+         if(arg is Pointer)
+            {
+                Pointer pointer = arg as Pointer;
+                switch(pointer.pointer)
+                {
+                    case "Hand": last = gameManager.HandOfPlayer(gameManager.TriggerPlayer());break;
+                    case "Deck": last = gameManager.DeckofPlayer(gameManager.TriggerPlayer());break;
+                    case "Graveyard": last = gameManager.GraveyardOfPlayer(gameManager.TriggerPlayer());break;
+                    case "Field": last = gameManager.FieldOfPlayer(gameManager.TriggerPlayer());break;
+                    case "Board": last = gameManager.CardsOnBoard();break;
+                }
+            }
+            else
+            {
+                Card card = last as Card;
+                switch(arg)
+                {
+                    // case Type: last = card.tipo;break;
+                    case Name: last = card.name;break;
+                    case Faction: last = card.faction;break;
+                    case PowerAsField: last = card.power;break;
+                    // case Range: last = card.range;break;
+                    // case Owner: last = card.Owner;break;
+                }
+            }
+        }
+        return last;
+    }
+    public void Ejecuta(Semantic semantic, GameManager gameManager)
+    {
+        object last = null;
+        if(semantic.objectVars.ContainsKey(Value)) last = semantic.objectVars[Value];
+        foreach(var arg in args.Arguments)
+        {
+            if(arg is FunctionDeclaration)
+            {
+                last = (arg as FunctionDeclaration).GetValue(semantic,gameManager,last);
+            }
+            else if(arg is Pointer)
+            {
+                Pointer pointer = arg as Pointer;
+                switch(pointer.pointer)
+                {
+                    case "Hand": last = gameManager.HandOfPlayer(gameManager.TriggerPlayer());break;
+                    case "Deck": last = gameManager.DeckofPlayer(gameManager.TriggerPlayer());break;
+                    case "Graveyard": last = gameManager.GraveyardOfPlayer(gameManager.TriggerPlayer());break;
+                    case "Field": last = gameManager.FieldOfPlayer(gameManager.TriggerPlayer());break;
+                    case "Board": last = gameManager.CardsOnBoard();break;
+                }
+            }
+        }
+    }
+    public void AssignValue(Semantic semantic, GameManager gameManager, System.Object value)
+    {
+        object last = null;
+        if(Value == "target")
+        {
+            last = semantic.objectVars[Value];
+        }
+        foreach(var arg in args.Arguments)
+        {
+            if(arg is FunctionDeclaration)
+            {
+                last = (arg as FunctionDeclaration).GetValue(semantic,gameManager,last);
+            }
+            
+            else if(arg is Pointer)
+            {
+                Pointer pointer = arg as Pointer;
+                switch(pointer.pointer)
+                {
+                    case "Hand": last = gameManager.HandOfPlayer(gameManager.TriggerPlayer());break;
+                    case "Deck": last = gameManager.DeckofPlayer(gameManager.TriggerPlayer());break;
+                    case "Graveyard": last = gameManager.GraveyardOfPlayer(gameManager.TriggerPlayer());break;
+                    case "Field": last = gameManager.FieldOfPlayer(gameManager.TriggerPlayer());break;
+                    case "Board": last = gameManager.CardsOnBoard();break;
+                }
+            }
+            else
+            {
+                GameObject card = last as GameObject;
+                switch(arg)
+                {
+                    // case Type: card.GetComponent<CardDisplay>().tipo = value as string;break;
+                    case Name: card.GetComponent<CardDisplay>().nameText.text = value as string;break;
+                    case Faction: card.GetComponent<CardDisplay>().faction = value as string;break;
+                    case PowerAsField: card.GetComponent<CardDisplay>().power = Convert.ToInt32(value);
+                    break;
+                    // case Range: last = card.GetComponent<CardDisplay>().range;break;
+                }
+            }
+        }
+    }
+    
 }
 public class Number : Expression
 {
@@ -510,7 +657,7 @@ public class Number : Expression
         Value = value;
     }
 
-    public override object Evaluate()
+    public override object Evaluate(Semantic semantic, GameManager gameManager)
     {
         return Value;
     }
@@ -529,7 +676,7 @@ public class String : Expression
         Value = value;
     }
 
-    public override object Evaluate()
+    public override object Evaluate(Semantic semantic, GameManager gameManager)
     {
         return Value;
     }
@@ -548,7 +695,7 @@ public class Bool : Expression
         Value = value;
     }
 
-    public override object Evaluate()
+    public override object Evaluate(Semantic semantic, GameManager gameManager)
     {
         return Value;
     }
@@ -565,9 +712,9 @@ public class ExpressionGroup : Expression
     {
         Exp = expression;
     }
-    public override object Evaluate()
+    public override object Evaluate(Semantic semantic, GameManager gameManager)
     {
-        return Exp.Evaluate();
+        return Exp.Evaluate(semantic, gameManager);
     }
     public override void Show(int space = 0)
     {
@@ -598,7 +745,7 @@ public class Args : Node
 
 public interface Statement : Node
 {
-    
+    public void Ejecuta(Semantic semantic, GameManager gameManager);
 }
 
 public class StatementBlock : Node
@@ -628,7 +775,17 @@ public class WhileStatement : Statement
         Condition = condition;
         Body = body;
     }
-
+    public  void Ejecuta(Semantic semantic, GameManager gameManager)
+    {
+        while((bool)Condition.Evaluate(semantic, gameManager))
+        {
+            foreach(var stmt in Body.statements)
+            {
+                stmt.Ejecuta(semantic, gameManager);
+            }
+        }
+    }
+    
     public void Show(int space = 0)
     {
         Debug.Log(new string(' ', space) + "WhileStatement:");
@@ -661,6 +818,18 @@ public class ForStatement : Statement
         Debug.Log(new string(' ', space + 2) + "Body:");
         Body?.Show(space + 2);
     }
+    public void Ejecuta(Semantic semantic, GameManager gameManager)
+    {
+        foreach(GameObject target in semantic.objectVars["targets"] as List<GameObject>)
+        {
+            semantic.objectVars["target"] = target;
+            foreach(var stmt in Body.statements)
+            {
+                stmt.Ejecuta(semantic,gameManager);
+            }
+            semantic.objectVars.Remove("target");
+        }
+    }
 }
 
 
@@ -675,7 +844,46 @@ public class Assignment : Statement
         Op = op;
         Right = right;
     }
-
+     public void Ejecuta(Semantic semantic, GameManager gameManager)
+     {
+        if(Op.Type == TokenType.EQUAL)
+        {
+            if(Left is VariableComp)
+            {
+                (Left as VariableComp).AssignValue(semantic,gameManager,Right.Evaluate(semantic,gameManager));
+            }
+            else
+            {
+                semantic.objectVars[Left.Value] = Right.Evaluate(semantic,gameManager);
+            }
+        }
+        else if(Op.Type == TokenType.PLUS_EQUALS)
+        {
+            if(Left is VariableComp)
+            {
+                (Left as VariableComp).AssignValue(semantic,gameManager,Convert.ToInt32(Left.Evaluate(semantic,gameManager))+Convert.ToInt32(Right.Evaluate(semantic,gameManager)));
+            }
+            else
+            {
+                int result = Convert.ToInt32(semantic.objectVars[Left.Value]);
+                result += Convert.ToInt32(Right.Evaluate(semantic,gameManager));
+                semantic.objectVars[Left.Value] = result;
+            }
+        }
+        else if(Op.Type == TokenType.MINUS_EQUALS)
+        {
+            if(Left is VariableComp)
+            {
+                (Left as VariableComp).AssignValue(semantic,gameManager,Convert.ToInt32(Left.Evaluate(semantic, gameManager))-Convert.ToInt32(Right.Evaluate(semantic, gameManager)));
+            }
+            else
+            {
+                int result = Convert.ToInt32(semantic.objectVars[Left.Value]);
+                result -= Convert.ToInt32(Right.Evaluate(semantic,gameManager));
+                semantic.objectVars[Left.Value] = result;
+            }
+        }
+     }
     public void Show(int space = 0)
     {
         Debug.Log(new string(' ', space) + "Assignment:");
@@ -698,6 +906,10 @@ public class FunctionDeclaration : Statement
         Type = Variable.Type.NULL;
         TypeToReturn();
     }
+    public void Ejecuta(Semantic semantic, GameManager gameManager)
+    {
+        throw new NotImplementedException();
+    }
 
     public void TypeToReturn()
     {
@@ -713,11 +925,32 @@ public class FunctionDeclaration : Statement
         if (FunctionName == "Shuffle") Type = Variable.Type.VOID;
         if (FunctionName == "Add") Type = Variable.Type.VOID;
     }
-
+    public object GetValue(Semantic semantic, GameManager gameManager,System.Object value)
+    {
+        switch(FunctionName)
+        {
+            case "TriggerPlayer": return gameManager.TriggerPlayer();
+            case "HandOfPlayer": if(Args.Arguments[0] is FunctionDeclaration) return gameManager.HandOfPlayer(Convert.ToInt32((Args.Arguments[0] as FunctionDeclaration).GetValue(semantic, gameManager,value)));
+            else return gameManager.HandOfPlayer(Convert.ToInt32((Args.Arguments[0] as Expression).Evaluate(semantic,gameManager)));
+            case "DeckOfPlayer": if(Args.Arguments[0] is FunctionDeclaration) return gameManager.DeckofPlayer(Convert.ToInt32((Args.Arguments[0] as FunctionDeclaration).GetValue(semantic, gameManager,value)));
+            else return gameManager.DeckofPlayer(Convert.ToInt32((Args.Arguments[0] as Expression).Evaluate(semantic,gameManager)));
+            case "GraveyardOfPlayer": if(Args.Arguments[0] is FunctionDeclaration) return gameManager.GraveyardOfPlayer(Convert.ToInt32((Args.Arguments[0] as FunctionDeclaration).GetValue(semantic, gameManager,value)));
+            else return gameManager.GraveyardOfPlayer(Convert.ToInt32((Args.Arguments[0] as Expression).Evaluate(semantic,gameManager)));
+            case "FieldOfPlayer": if(Args.Arguments[0] is FunctionDeclaration) return gameManager.FieldOfPlayer(Convert.ToInt32((Args.Arguments[0] as FunctionDeclaration).GetValue(semantic, gameManager,value)));
+            else return gameManager.FieldOfPlayer(Convert.ToInt32((Args.Arguments[0] as Expression).Evaluate(semantic,gameManager)));
+            // case "Find": (value as CardList).Find(Args.Arguments[0] as Predicate);return null;
+            // case "Push": (value as CardList).Push((Args.Arguments[0] as Expression).Evaluate(semantic,gameManager) as GameObject);return null;
+            // case "SendBottom": (value as CardList).SendBottom((Args.Arguments[0] as Expression).Evaluate(semantic,gameManager) as GameObject);return null;
+            // case "Pop": return (value as CardList).Pop();
+            // case "Remove": (value as CardList).Remove((Args.Arguments[0] as Expression).Evaluate(semantic,gameManager) as GameObject);return null;
+            // case "Shuffle": (value as CardList).Shuffle();return null; 
+            default: return null;
+        }
+    }
     public void Show(int space = 0)
     {
-        Debug.Log(new string(' ', space) + "Function:");
-        Debug.Log(new string(' ', space + 2) + "FunctionName: " + FunctionName);
+        Debug.Log(new string(' ', space) + "FunctionDeclaration:");
+        Debug.Log(new string(' ', space + 2) + "FunctionDeclarationName: " + FunctionName);
         Args?.Show(space + 2);
         Debug.Log(new string(' ', space + 2) + "Return Type: " + Type.ToString());
     }

@@ -38,6 +38,7 @@ public class CardDisplay : MonoBehaviour
     powerText.text = card.power.ToString();
     plantimage.sprite = card.plantimage;
     kind.sprite = card.kind;
+    
   }
 
   /*public bool CanPlayCard (bool faction, char zone)

@@ -6,7 +6,7 @@ using UnityEngine;
 public class Parser : MonoBehaviour
 {
      List<Token> Tokens{get;}
-    List<string> Errors = new List<string>();
+     List<string> Errors = new List<string>();
      int current = 0;
     public Parser(List<Token> tokens, List<string>errors)
     {
@@ -170,6 +170,7 @@ public class Parser : MonoBehaviour
         OAEffect onActivationEffect = null!;
         Selector selector = null!;
         PostAction postAction = null!;
+        List<PostAction> postActions = new List<PostAction>();
         while(!Check(TokenType.RIGHT_BRACE) && !IsAtEnd())
         {
             if(Match(TokenType.ONACTIVATIONEFFECT))
@@ -200,15 +201,18 @@ public class Parser : MonoBehaviour
             }
             else if(Match(TokenType.POSTACTION))
             {
-                if(postAction == null)
-                {
+                
+                // if(postAction == null)
+                // {
                     Consume(TokenType.COLON,"Expected ':'");
                     postAction = ParsePostAction();
-                }
-                else
-                {
+                    
+                    postActions.Add(postAction);
+                // }
+                // else
+                // {
 
-                }
+                // }
             }
             else
             {
@@ -216,7 +220,7 @@ public class Parser : MonoBehaviour
             }
         }
         Consume(TokenType.RIGHT_BRACE,"Expected '}' after OnActivation declaration");
-        return new OnActivationElements(onActivationEffect,selector,postAction);
+        return new OnActivationElements(onActivationEffect,selector,postActions);
     }
 
     OAEffect ParseOAEffect()
@@ -597,7 +601,7 @@ public class Parser : MonoBehaviour
         else
         {
             Errors.Add("");
-            throw new Error(" ");
+            return null;
         }
     }
 
@@ -674,8 +678,9 @@ public class Parser : MonoBehaviour
             }
             else
             {
-                throw new System.Exception("Expected type after parameter name");
+                Errors.Add("Expected type after parameter name");
                 //return variables
+                return null;
             }
         }
         Consume(TokenType.RIGHT_BRACE,"Expected '}' after Params declaration");
@@ -696,8 +701,8 @@ public class Parser : MonoBehaviour
         }
         catch(Error exception)
         {
-            Debug.Log($"Semantical error:{exception.Message}");
-            throw;
+            Errors.Add($"Semantical error:{exception.Message}");
+            return null;
         }
     }
 
@@ -804,7 +809,7 @@ public class Parser : MonoBehaviour
             return ParseVariable();
         }
         Errors.Add($"'{Peek().Lexeme}' in line {Peek().Line}: Unexpected token.");
-        throw new Error(" ");
+         return null;
     }
 
     bool Match(TokenType type)
@@ -855,6 +860,6 @@ public class Parser : MonoBehaviour
         Debug.Log(Peek().Type + " " + Peek().Lexeme);
         if(Check(type)) return Advance();
         Errors.Add($"'{Peek().Lexeme}' in line {Peek().Line}: {message}");
-        throw new Error(" ");
+        return null;
     }
 }

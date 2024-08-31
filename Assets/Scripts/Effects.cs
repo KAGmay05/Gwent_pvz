@@ -60,10 +60,7 @@ public class Effects : MonoBehaviour
             {
                 if (!affectedcards.Contains(card))
                 {
-
-
-
-                    cardDisplay.power = cardDisplay.power * 2;
+                  cardDisplay.power = cardDisplay.power * 2;
 
                 }
                 affectedcards.Add(card);

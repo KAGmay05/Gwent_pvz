@@ -63,7 +63,6 @@ public class turns : MonoBehaviour
 			Visibility1(enemyhand, false);
 			UnityEngine.Debug.Log("Turno 1");
 			Checking checking = GameObject.Find("checking").GetComponent<Checking>();
-
 			checking.CheckingEffects();
 			
 
@@ -77,7 +76,7 @@ public class turns : MonoBehaviour
 			
 			UnityEngine.Debug.Log("Turno 2");
 			Checking checking = GameObject.Find("checking").GetComponent<Checking>();
-
+             
 			checking.CheckingEffects();
 			
 

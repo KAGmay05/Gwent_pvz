@@ -15,50 +15,50 @@ public class Lexer : MonoBehaviour
     {
         Input=input;
         Errors = errors;
-        keywords.Add("while", new Token(TokenType.WHILE,"while","while",0,0));
-        keywords.Add("for", new Token(TokenType.FOR,"for","for",0,0));
-        keywords.Add("in", new Token(TokenType.IN,"in","in",0,0));
-        keywords.Add("true", new Token(TokenType.TRUE,"true","true",0,0));
-        keywords.Add("false", new Token(TokenType.FALSE,"false","false",0,0));
+        keywords["while"] = new Token(TokenType.WHILE,"while","while",0,0);
+        keywords["for"] = new Token(TokenType.FOR,"for","for",0,0);
+        keywords["in"] = new Token(TokenType.IN,"in","in",0,0);
+        keywords["true"] = new Token(TokenType.TRUE,"true","true",0,0);
+        keywords["false"] = new Token(TokenType.FALSE,"false","false",0,0);
         
-        keywords.Add("card", new Token(TokenType.CARD, "card", "card", 0, 0));
-        keywords.Add("effect", new Token(TokenType.EFFECT, "effect", "effect", 0, 0));
-        keywords.Add("Name", new Token(TokenType.NAME, "Name", "Name", 0, 0));
-        keywords.Add("Params", new Token(TokenType.PARAMS, "Params", "Params", 0, 0));
-        keywords.Add("Action", new Token(TokenType.ACTION, "Action", "Action", 0, 0));
-        keywords.Add("Type", new Token(TokenType.TYPE, "Type", "Type", 0, 0));
-        keywords.Add("Faction", new Token(TokenType.FACTION, "Faction", "Faction", 0, 0));
-        keywords.Add("Power", new Token(TokenType.POWER, "Power", "Power", 0, 0));
-        keywords.Add("Range", new Token(TokenType.RANGE, "Range", "Range", 0, 0));
-        keywords.Add("OnActivation", new Token(TokenType.ONACTIVATION, "OnActivation", "OnActivation", 0, 0));
-        keywords.Add("Effect", new Token(TokenType.ONACTIVATIONEFFECT, "Effect", "Effect", 0, 0));
-        keywords.Add("Selector", new Token(TokenType.SELECTOR, "Selector", "Selector", 0, 0));
-        keywords.Add("Single", new Token(TokenType.SINGLE, "Single", "Single", 0, 0));
-        keywords.Add("Predicate", new Token(TokenType.PREDICATE, "Predicate", "Predicate", 0, 0));
-        keywords.Add("PostAction", new Token(TokenType.POSTACTION, "PostAction", "PostAction", 0, 0));
-        keywords.Add("Source", new Token(TokenType.SOURCE, "Source", "Source", 0, 0));
+        keywords["card"] = new Token(TokenType.CARD, "card", "card", 0, 0);
+        keywords["effect"] = new Token(TokenType.EFFECT, "effect", "effect", 0, 0);
+        keywords["Name"] = new Token(TokenType.NAME, "Name", "Name", 0, 0);
+        keywords["Params"]= new Token(TokenType.PARAMS, "Params", "Params", 0, 0);
+        keywords["Action"] = new Token(TokenType.ACTION, "Action", "Action", 0, 0);
+        keywords["Type"] = new Token(TokenType.TYPE, "Type", "Type", 0, 0);
+        keywords["Faction"] = new Token(TokenType.FACTION, "Faction", "Faction", 0, 0);
+        keywords["Power"]  = new Token(TokenType.POWER, "Power", "Power", 0, 0);
+        keywords["Range"] = new Token(TokenType.RANGE, "Range", "Range", 0, 0);
+        keywords["OnActivation"] = new Token(TokenType.ONACTIVATION, "OnActivation", "OnActivation", 0, 0);
+        keywords["Effect"] = new Token(TokenType.ONACTIVATIONEFFECT, "Effect", "Effect", 0, 0);
+        keywords["Selector"] = new Token(TokenType.SELECTOR, "Selector", "Selector", 0, 0);
+        keywords["Single"] = new Token(TokenType.SINGLE, "Single", "Single", 0, 0);
+        keywords["Predicate"] = new Token(TokenType.PREDICATE, "Predicate", "Predicate", 0, 0);
+        keywords["PostAction"] = new Token(TokenType.POSTACTION, "PostAction", "PostAction", 0, 0);
+        keywords["Source"] = new Token(TokenType.SOURCE, "Source", "Source", 0, 0);
 
-        keywords.Add("Hand", new Token(TokenType.POINTER, "Hand", "Hand", 0, 0));
-        keywords.Add("Field", new Token(TokenType.POINTER, "Field", "Field", 0, 0));
-        keywords.Add("Deck", new Token(TokenType.POINTER, "Deck", "Deck", 0, 0));
-        keywords.Add("Graveyard", new Token(TokenType.POINTER, "Graveyard", "Graveyard", 0, 0));
-        keywords.Add("Board", new Token(TokenType.POINTER, "Board", "Board", 0, 0));
+        keywords["Hand"] = new Token(TokenType.POINTER, "Hand", "Hand", 0, 0);
+        keywords["Field"] = new Token(TokenType.POINTER, "Field", "Field", 0, 0);
+        keywords["Deck"] = new Token(TokenType.POINTER, "Deck", "Deck", 0, 0);
+        keywords["Graveyard"] = new Token(TokenType.POINTER, "Graveyard", "Graveyard", 0, 0);
+        keywords["Board"] = new Token(TokenType.POINTER, "Board", "Board", 0, 0);
 
-        keywords.Add("TriggerPlayer", new Token(TokenType.FUN, "TriggerPlayer", "TriggerPlayer", 0, 0));
-        keywords.Add("HandOfPlayer", new Token(TokenType.FUN, "HandOfPlayer", "HandOfPlayer", 0, 0));
-        keywords.Add("DeckOfPlayer", new Token(TokenType.FUN, "DeckOfPlayer", "DeckOfPlayer", 0, 0));
-        keywords.Add("FieldOfPlayer", new Token(TokenType.FUN, "FieldOfPlayer", "FieldOfPlayer", 0, 0));
-        keywords.Add("GraveyardOfPlayer", new Token(TokenType.FUN, "GraveyardOfPlayer", "GraveyardOfPlayer", 0, 0));
-        keywords.Add("Find", new Token(TokenType.FUN, "Find", "Find", 0, 0));
-        keywords.Add("Push", new Token(TokenType.FUN, "Push", "Push", 0, 0));
-        keywords.Add("SendBottom", new Token(TokenType.FUN, "SendBottom", "SendBottom", 0, 0));
-        keywords.Add("Pop", new Token(TokenType.FUN, "Pop", "Pop", 0, 0));
-        keywords.Add("Remove", new Token(TokenType.FUN, "Remove", "Remove", 0, 0));
-        keywords.Add("Shuffle", new Token(TokenType.FUN, "Shuffle", "Shuffle", 0, 0));
+        keywords["TriggerPlayer"] = new Token(TokenType.FUN, "TriggerPlayer", "TriggerPlayer", 0, 0);
+        keywords["HandOfPlayer"] = new Token(TokenType.FUN, "HandOfPlayer", "HandOfPlayer", 0, 0);
+        keywords["DeckOfPlayer"] = new Token(TokenType.FUN, "DeckOfPlayer", "DeckOfPlayer", 0, 0);
+        keywords["FieldOfPlayer"] =  new Token(TokenType.FUN, "FieldOfPlayer", "FieldOfPlayer", 0, 0);
+        keywords["GraveyardOfPlayer"] = new Token(TokenType.FUN, "GraveyardOfPlayer", "GraveyardOfPlayer", 0, 0);
+        keywords["Find"] = new Token(TokenType.FUN, "Find", "Find", 0, 0);
+        keywords["Push"] = new Token(TokenType.FUN, "Push", "Push", 0, 0);
+        keywords["SendBottom"] = new Token(TokenType.FUN, "SendBottom", "SendBottom", 0, 0);
+        keywords["Pop"] = new Token(TokenType.FUN, "Pop", "Pop", 0, 0);
+        keywords["Remove"] = new Token(TokenType.FUN, "Remove", "Remove", 0, 0);
+        keywords["Shuffle"] = new Token(TokenType.FUN, "Shuffle", "Shuffle", 0, 0);
 
-        keywords.Add("Number", new Token(TokenType.NUMBERTYPE, "Number", "Number", 0, 0));
-        keywords.Add("String", new Token(TokenType.STRINGTYPE, "String", "String", 0, 0));
-        keywords.Add("Bool", new Token(TokenType.BOOLTYPE, "Bool", "Bool", 0, 0));
+        keywords["Number"] = new Token(TokenType.NUMBERTYPE, "Number", "Number", 0, 0);
+        keywords["String"] = new Token(TokenType.STRINGTYPE, "String", "String", 0, 0);
+        keywords["Bool"] = new Token(TokenType.BOOLTYPE, "Bool", "Bool", 0, 0);
     }
     public List<Token> ScanTokens()
     {
@@ -82,7 +82,7 @@ public class Lexer : MonoBehaviour
         catch (Error ex)
         {
             Errors.Add("Lexic error" + ex.Message);
-            throw;
+            return null;
         }
     }
     void ScanToken()

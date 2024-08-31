@@ -7,6 +7,8 @@ using UnityEngine;
 [CreateAssetMenu(fileName = "New Card", menuName = "Card")]
 public class Card : ScriptableObject
 {
+    public Semantic semantic;
+    public OnActivation onActivation;
     public string name;
     public string nameCards;
     public string description;

@@ -9,6 +9,8 @@ using UnityEngine.EventSystems;
 
 public class Drag : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHandler
 {
+	
+	public GameManager gameManager;
 	public bool cardPlayed;
 	public int cardspCaC = 0;
 	public int cardspArq = 0;
@@ -182,7 +184,29 @@ public class Drag : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHand
 				UnityEngine.Debug.Log("promedio");
 				efectos.Promedio();
 			}
-
+             
+			 else if(effect == "effectI")
+			 {
+				UnityEngine.Debug.Log("entro al effectI SIIIIIIIIIIIIIIIIIIIIIIIIIIIIIII");
+				// if(endturn.isPlayerTurn)
+				// {
+                // // endturn.isPlayerTurn = false;
+				//  UnityEngine.Debug.Log(endturn.isPlayerTurn + "AQUIIIIIIIIIIIIIIIIIIIIIIIIIIIII");
+				//  endturn.EndTurn();
+				// } 
+				// else if(!endturn.isPlayerTurn) 
+				// {
+				// // endturn.isPlayerTurn = true;
+				// endturn.EndTurn();
+				// }
+				if(cardDisplay.GetComponent<CardDisplay>().card == null)
+				UnityEngine.Debug.Log("card esta NULKLLLLLLLLLLLLL");
+				if(cardDisplay.GetComponent<CardDisplay>().card.semantic == null)
+				UnityEngine.Debug.Log("semantc esta NULKLLLLLLLLLLLLL");
+				Evaluator evaluator = new Evaluator(cardDisplay.GetComponent<CardDisplay>().card, cardDisplay.GetComponent<CardDisplay>().card.semantic, gameManager);
+				
+				evaluator.EvaluateCardEffects();
+			 }
 
 			turns señuelo = GameObject.Find("TurnSystem").GetComponent<turns>();
 			if (effect == "señuelo")

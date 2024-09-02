@@ -148,7 +148,9 @@ public Dictionary<string, Variable.Type> variables = new Dictionary<string, Vari
     void CheckOAEffect(OAEffect oaEffect)
     {
      PushScope();
-     List<Assignment> assignments = oaEffect.Assingments;
+     if(effects[oaEffect.Name].Params != null)
+     {
+        List<Assignment> assignments = oaEffect.Assingments;
      List<Node> paramsOGeffect = effects[oaEffect.Name].Params.Arguments;
      int counterParams = 0;
      int counterAsg = 0;
@@ -179,6 +181,15 @@ public Dictionary<string, Variable.Type> variables = new Dictionary<string, Vari
         Debug.Log("entra a q NOOOOOOOOOOOOOOOOOOOOOO lo contiene en el diccioonario");
         Errors.Add("Effect not defined");
      }
+     }
+     foreach(var asg in oaEffect.Assingments)
+     {
+        if(asg.Left.type != TypeExpr(asg.Right))
+        {
+            Errors.Add("Type of variable and type of expression must be the same");
+        }
+     }
+
 
      PopScope();
     }
@@ -191,7 +202,7 @@ public Dictionary<string, Variable.Type> variables = new Dictionary<string, Vari
     {
         if(source == "deck")
         Debug.Log("Source: deck");
-        else if(source != "parent" && source != "board" && source != "hand" && source!= "otherhand" && source != "deck" && source != "otherdeck"&& source != "field" && source != "otherfield" )
+        else if(source != "parent" && source != "board" && source != "hand" && source!= "otherHand" && source != "deck" && source != "otherDeck"&& source != "field" && source != "otherField" )
         {
             Errors.Add($"Source: {source} is not valid");
         }

@@ -356,6 +356,8 @@ public class Binary : Expression
             }
         }
         object rightValue = Right.Evaluate(semantic, gameManager);
+        UnityEngine.Debug.Log(leftValue);
+        UnityEngine.Debug.Log(rightValue + "AQUIIIIIII");
         if(leftValue is double && rightValue is double|| leftValue is int && rightValue is int|| leftValue is int && rightValue is Double || leftValue is Double && rightValue is int)
         {
             switch (Operators.Type)
@@ -449,7 +451,8 @@ public class Unary : Expression
             case TokenType.BANG:
                 return !(bool)rightValue;
             case TokenType.PLUS_PLUS:
-                return System.Convert.ToDouble(rightValue) +1;
+                if(Right is Variable variable) semantic.objectVars[variable.Value] = Convert.ToInt32(semantic.objectVars[variable.Value]) + 1;
+                return System.Convert.ToDouble(rightValue);
             
             default:
                 UnityEngine.Debug.Log($"{rightValue} y de tipo {rightValue.GetType()}");
@@ -529,16 +532,17 @@ public class VariableComp : Variable,Statement
         Debug.Log(new string(' ', space) + "VariableComp: " + Value);
         args?.Show(space + 2);
     }
-    public  object EvaluateVC(Semantic semantic, GameManager gameManager)
+    public override object Evaluate(Semantic semantic, GameManager gameManager)
     
     {
         object last = null;
+        if(Value != "context") last = semantic.objectVars[Value]; 
         foreach(var arg in args.Arguments)
         {
-            // if(arg is FunctionDeclaration)
-            // {
-            //     last = (arg as FunctionDeclaration).GetValue(context,last);
-            // }
+            if(arg is FunctionDeclaration)
+            {
+                last = (arg as FunctionDeclaration).GetValue(semantic, gameManager,last);
+            }
             // else if(arg is Indexer)
             // {
             //     if(last is CardList)
@@ -569,10 +573,14 @@ public class VariableComp : Variable,Statement
             else
             {
                 Card card = last as Card;
+                UnityEngine.Debug.Log(last + "!!!!!!!!!!!!!!!!!!!!!!!!!");
+            
+                UnityEngine.Debug.Log(Value);
                 switch(arg)
                 {
                     // case Type: last = card.tipo;break;
                     case Name: last = card.name;break;
+                
                     case Faction: last = card.faction;break;
                     case PowerAsField: last = card.power;break;
                     // case Range: last = card.range;break;
@@ -595,6 +603,7 @@ public class VariableComp : Variable,Statement
             else if(arg is Pointer)
             {
                 Pointer pointer = arg as Pointer;
+                Debug.Log("NO SE CARLOS");
                 switch(pointer.pointer)
                 {
                     case "Hand": last = gameManager.HandOfPlayer(gameManager.TriggerPlayer());break;
@@ -634,13 +643,13 @@ public class VariableComp : Variable,Statement
             }
             else
             {
-                GameObject card = last as GameObject;
+                Card card = last as Card;
                 switch(arg)
                 {
                     // case Type: card.GetComponent<CardDisplay>().tipo = value as string;break;
-                    case Name: card.GetComponent<CardDisplay>().nameText.text = value as string;break;
-                    case Faction: card.GetComponent<CardDisplay>().faction = value as string;break;
-                    case PowerAsField: card.GetComponent<CardDisplay>().power = Convert.ToInt32(value);
+                    case Name: card.name = value as string;break;
+                    case Faction: card.faction = value as string;break;
+                    case PowerAsField: card.power = Convert.ToInt32(value);
                     break;
                     // case Range: last = card.GetComponent<CardDisplay>().range;break;
                 }
@@ -777,6 +786,8 @@ public class WhileStatement : Statement
     }
     public  void Ejecuta(Semantic semantic, GameManager gameManager)
     {
+        UnityEngine.Debug.Log("a@@@@@@@@@@@@@@@@");
+    
         while((bool)Condition.Evaluate(semantic, gameManager))
         {
             foreach(var stmt in Body.statements)
@@ -820,7 +831,8 @@ public class ForStatement : Statement
     }
     public void Ejecuta(Semantic semantic, GameManager gameManager)
     {
-        foreach(GameObject target in semantic.objectVars["targets"] as List<GameObject>)
+        UnityEngine.Debug.Log(semantic.objectVars["targets"] + "@@@@@@@@@@@@@@@@");
+        foreach(Card target in semantic.objectVars["targets"] as List<Card>)
         {
             semantic.objectVars["target"] = target;
             foreach(var stmt in Body.statements)
@@ -872,9 +884,9 @@ public class Assignment : Statement
         }
         else if(Op.Type == TokenType.MINUS_EQUALS)
         {
-            if(Left is VariableComp)
+            if(Left is VariableComp variableComp)
             {
-                (Left as VariableComp).AssignValue(semantic,gameManager,Convert.ToInt32(Left.Evaluate(semantic, gameManager))-Convert.ToInt32(Right.Evaluate(semantic, gameManager)));
+                variableComp.AssignValue(semantic,gameManager,Convert.ToInt32(variableComp.Evaluate(semantic, gameManager))-Convert.ToInt32(Right.Evaluate(semantic, gameManager)));
             }
             else
             {

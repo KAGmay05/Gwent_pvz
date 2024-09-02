@@ -190,7 +190,7 @@ public class Drag : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHand
 				UnityEngine.Debug.Log("entro al effectI SIIIIIIIIIIIIIIIIIIIIIIIIIIIIIII");
 				// if(endturn.isPlayerTurn)
 				// {
-                // // endturn.isPlayerTurn = false;
+                // //  endturn.isPlayerTurn = false;
 				//  UnityEngine.Debug.Log(endturn.isPlayerTurn + "AQUIIIIIIIIIIIIIIIIIIIIIIIIIIIII");
 				//  endturn.EndTurn();
 				// } 

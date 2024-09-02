@@ -35,7 +35,7 @@ public class Evaluator : MonoBehaviour
     public void EvaluateOAEffect(OAEffect oAEffect, Selector selector, string source)
     {
      Effect effect = semantic.effects[oAEffect.Name];
-     UnityEngine.Debug.Log(effect.Name + "esta en evaluate OAEffect");
+     UnityEngine.Debug.Log(effect.Name + "esta en evaluate OAEffect !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
      foreach(var assignment in oAEffect.Assingments)
      {
         semantic.objectVars[assignment.Left.Value] = assignment.Right.Evaluate(semantic, gameManager);
@@ -44,6 +44,7 @@ public class Evaluator : MonoBehaviour
      if(selector !=null)
      {
         semantic.objectVars["targets"] = EvaluateSelector(selector, source);
+        UnityEngine.Debug.Log($"{semantic.objectVars["targets"]} esta en evaluate OAEffect!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
         EvaluateAction(effect.Action);
         semantic.objectVars.Remove("targets");
      }
@@ -83,30 +84,13 @@ public class Evaluator : MonoBehaviour
      }
      else return filteredCards;
     }
-    public Func<Card,bool> EvaluatePredicate(Predicate predicate)
-    {
-        return card =>
-        {
-            semantic.objectVars[predicate.Var.Value] = card;
-            return (bool)predicate.Condition.Evaluate(semantic, gameManager);
-        };
-    }
     public List<Card> EvaluateSource(string source)
     {
      if(source == "hand") 
      {
         if(gameManager != null) UnityEngine.Debug.Log("game manager esta !null");
          if(gameManager.HandOfPlayer(gameManager.TriggerPlayer()) != null){ UnityEngine.Debug.Log("esta !null la lista de cartas"); 
-         if(gameManager.TriggerPlayer() == 0)
-         {
-            foreach(var card in gameManager.HandOfPlayer(0))
-         {
-            UnityEngine.Debug.Log(card + "AQUI LAS CARTASSSSSSS");
-            
-         }
-            return gameManager.HandOfPlayer(0);
-         }
-         else 
+         if(gameManager.TriggerPlayer() == 1)
          {
             foreach(var card in gameManager.HandOfPlayer(1))
          {
@@ -114,6 +98,15 @@ public class Evaluator : MonoBehaviour
             
          }
             return gameManager.HandOfPlayer(1);
+         }
+         else 
+         {
+            foreach(var card in gameManager.HandOfPlayer(0))
+         {
+            UnityEngine.Debug.Log(card + "AQUI LAS CARTASSSSSSS");
+            
+         }
+            return gameManager.HandOfPlayer(0);
          }
     
          }
@@ -162,181 +155,181 @@ public class Evaluator : MonoBehaviour
             statement.Ejecuta(semantic,gameManager);
         }
     }
-    public void EvaluateStatement(Statement statement)
-    {
-     if(statement is WhileStatement whileStatement)
-     {
-        while((bool)whileStatement.Condition.Evaluate(semantic, gameManager))
-        {
-         foreach(var stmt in whileStatement.Body.statements)
-         {
-          EvaluateStatement(stmt);
-         }
-        }
-     }
-     if(statement is VariableComp variableComp)
-     {
-        object result = null;
-        foreach(var arg in variableComp.args.Arguments)
-        {
-           if(arg is FunctionDeclaration functionDeclaration)
-           {
-            // result = EvaluateFunction(functionDeclaration);
-           }
-           else if(arg is Pointer pointer)
-           {
-            if(pointer.pointer == "hand") gameManager.HandOfPlayer(gameManager.TriggerPlayer());
-            if(pointer.pointer == "Deck") gameManager.DeckofPlayer(gameManager.TriggerPlayer());
-            if(pointer.pointer == "Field") gameManager.FieldOfPlayer(gameManager.TriggerPlayer());
-            if(pointer.pointer == "board") gameManager.CardsOnBoard();
-            if(pointer.pointer == "Graveyard") gameManager.GraveyardOfPlayer(gameManager.TriggerPlayer());
-           }
-        }
-     }
-     if(statement is ForStatement forStatement)
-     {
-        List<Card> targets = semantic.objectVars["targets"] as List<Card>;
-        foreach(Card target in targets)
-        {
-         semantic.objectVars["target"] = target;
-         foreach(var smt in forStatement.Body.statements)
-         {
-            EvaluateStatement(smt);
-         }
-         semantic.objectVars.Remove("targets");
-        }
-     }
-     if(statement is Assignment assignment)
-     {
-        EvaluateAssignment(assignment);
-     }
-    }
-    // public object EvaluateFunction(FunctionDeclaration functionDeclaration)
-    // {
-    //     if(functionDeclaration.FunctionName == "TriggerPlayer") return gameManager.TriggerPlayer();
-    //     if(functionDeclaration.FunctionName == "HandOfPlayer") 
-    //     {
-    //         if(functionDeclaration.Args.Arguments[0] is FunctionDeclaration function)
-    //         {
-    //          return gameManager.HandOfPlayer(Convert.ToInt32(function as Expression).Evaluate(semantic, gameManager));
-    //         }
-    //     }
-    //     return gameManager.HandOfPlayer(Convert.ToInt32(functionDeclaration.Args.Arguments[0].Evaluate(semantic, gameManager)));
-    // }
-    public void EvaluateAssignment(Assignment assignment)
-    {
+   //  public void EvaluateStatement(Statement statement)
+   //  {
+   //   if(statement is WhileStatement whileStatement)
+   //   {
+   //      while((bool)whileStatement.Condition.Evaluate(semantic, gameManager))
+   //      {
+   //       foreach(var stmt in whileStatement.Body.statements)
+   //       {
+   //        EvaluateStatement(stmt);
+   //       }
+   //      }
+   //   }
+   //   if(statement is VariableComp variableComp)
+   //   {
+   //      object result = null;
+   //      foreach(var arg in variableComp.args.Arguments)
+   //      {
+   //         if(arg is FunctionDeclaration functionDeclaration)
+   //         {
+   //          // result = EvaluateFunction(functionDeclaration);
+   //         }
+   //         else if(arg is Pointer pointer)
+   //         {
+   //          if(pointer.pointer == "hand") gameManager.HandOfPlayer(gameManager.TriggerPlayer());
+   //          if(pointer.pointer == "Deck") gameManager.DeckofPlayer(gameManager.TriggerPlayer());
+   //          if(pointer.pointer == "Field") gameManager.FieldOfPlayer(gameManager.TriggerPlayer());
+   //          if(pointer.pointer == "board") gameManager.CardsOnBoard();
+   //          if(pointer.pointer == "Graveyard") gameManager.GraveyardOfPlayer(gameManager.TriggerPlayer());
+   //         }
+   //      }
+   //   }
+   //   if(statement is ForStatement forStatement)
+   //   {
+   //      List<Card> targets = semantic.objectVars["targets"] as List<Card>;
+   //      foreach(Card target in targets)
+   //      {
+   //       semantic.objectVars["target"] = target;
+   //       foreach(var smt in forStatement.Body.statements)
+   //       {
+   //          EvaluateStatement(smt);
+   //       }
+   //       semantic.objectVars.Remove("targets");
+   //      }
+   //   }
+   //   if(statement is Assignment assignment)
+   //   {
+   //      EvaluateAssignment(assignment);
+   //   }
+   //  }
+   //  // public object EvaluateFunction(FunctionDeclaration functionDeclaration)
+   //  // {
+   //  //     if(functionDeclaration.FunctionName == "TriggerPlayer") return gameManager.TriggerPlayer();
+   //  //     if(functionDeclaration.FunctionName == "HandOfPlayer") 
+   //  //     {
+   //  //         if(functionDeclaration.Args.Arguments[0] is FunctionDeclaration function)
+   //  //         {
+   //  //          return gameManager.HandOfPlayer(Convert.ToInt32(function as Expression).Evaluate(semantic, gameManager));
+   //  //         }
+   //  //     }
+   //  //     return gameManager.HandOfPlayer(Convert.ToInt32(functionDeclaration.Args.Arguments[0].Evaluate(semantic, gameManager)));
+   //  // }
+   //  public void EvaluateAssignment(Assignment assignment)
+   //  {
        
          
-        if(assignment.Op.Type == TokenType.LESS_EQUAL)
-        {
-            if(assignment.Left is VariableComp variableComp)
-            {
-             AssignVariableComp(variableComp, Convert.ToInt32(assignment.Left.Evaluate(semantic, gameManager)) - Convert.ToInt32(assignment.Right.Evaluate(semantic, gameManager)));
-            }
-            else
-            {
-            int result = Convert.ToInt32(semantic.variables[assignment.Left.Value]);
-            result -= Convert.ToInt32(assignment.Right.Evaluate(semantic, gameManager));
-            semantic.objectVars[assignment.Left.Value] = result;
-            }
+   //      if(assignment.Op.Type == TokenType.LESS_EQUAL)
+   //      {
+   //          if(assignment.Left is VariableComp variableComp)
+   //          {
+   //           AssignVariableComp(variableComp, Convert.ToInt32(assignment.Left.Evaluate(semantic, gameManager)) - Convert.ToInt32(assignment.Right.Evaluate(semantic, gameManager)));
+   //          }
+   //          else
+   //          {
+   //          int result = Convert.ToInt32(semantic.variables[assignment.Left.Value]);
+   //          result -= Convert.ToInt32(assignment.Right.Evaluate(semantic, gameManager));
+   //          semantic.objectVars[assignment.Left.Value] = result;
+   //          }
        
-        }
-        if(assignment.Op.Type == TokenType.PLUS_EQUALS)
-        {
-            if(assignment.Left is VariableComp variableComp)
-            {
-             AssignVariableComp(variableComp, Convert.ToInt32(assignment.Left.Evaluate(semantic, gameManager)) + Convert.ToInt32(assignment.Right.Evaluate(semantic, gameManager)));
-            }
-            int result = Convert.ToInt32(semantic.variables[assignment.Left.Value]);
-            result -= Convert.ToInt32(assignment.Right.Evaluate(semantic, gameManager));
-            semantic.objectVars[assignment.Left.Value] = result;
-        }
-        else if(assignment.Op.Type == TokenType.EQUAL)
-        {
-            if(assignment.Left is VariableComp variableComp)
-            {
-                AssignVariableComp(variableComp, assignment.Right.Evaluate(semantic, gameManager));
-            }
-            semantic.objectVars[assignment.Left.Value] = assignment.Right.Evaluate(semantic, gameManager);
-        }
+   //      }
+   //      if(assignment.Op.Type == TokenType.PLUS_EQUALS)
+   //      {
+   //          if(assignment.Left is VariableComp variableComp)
+   //          {
+   //           AssignVariableComp(variableComp, Convert.ToInt32(assignment.Left.Evaluate(semantic, gameManager)) + Convert.ToInt32(assignment.Right.Evaluate(semantic, gameManager)));
+   //          }
+   //          int result = Convert.ToInt32(semantic.variables[assignment.Left.Value]);
+   //          result -= Convert.ToInt32(assignment.Right.Evaluate(semantic, gameManager));
+   //          semantic.objectVars[assignment.Left.Value] = result;
+   //      }
+   //      else if(assignment.Op.Type == TokenType.EQUAL)
+   //      {
+   //          if(assignment.Left is VariableComp variableComp)
+   //          {
+   //              AssignVariableComp(variableComp, assignment.Right.Evaluate(semantic, gameManager));
+   //          }
+   //          semantic.objectVars[assignment.Left.Value] = assignment.Right.Evaluate(semantic, gameManager);
+   //      }
          
-    }
-    public void AssignVariableComp(VariableComp variableComp, object value)
-    {
-     foreach(var arg in variableComp.args.Arguments)
-     {
-        if(arg is FunctionDeclaration functionDeclaration)
-        {
-            // EvaluateFunction(functionDeclaration);
-        }
-        if(arg is Pointer pointer)
-        {
-            if(pointer.pointer == "hand") gameManager.HandOfPlayer(gameManager.TriggerPlayer());
-            if(pointer.pointer == "Deck") gameManager.DeckofPlayer(gameManager.TriggerPlayer());
-            if(pointer.pointer == "Field") gameManager.FieldOfPlayer(gameManager.TriggerPlayer());
-            if(pointer.pointer == "board") gameManager.CardsOnBoard();
-       }
-       else if(arg is Card card)
-       {
-        if(arg is Name ) card.name = value as string;
-        if(arg is Faction) card.faction = value as string;
-        if(arg is Type) card.tipo = value as string;
-        if(arg is PowerAsField) card.ogpower = Convert.ToInt32(value);
+   //  }
+   //  public void AssignVariableComp(VariableComp variableComp, object value)
+   //  {
+   //   foreach(var arg in variableComp.args.Arguments)
+   //   {
+   //      if(arg is FunctionDeclaration functionDeclaration)
+   //      {
+   //          // EvaluateFunction(functionDeclaration);
+   //      }
+   //      if(arg is Pointer pointer)
+   //      {
+   //          if(pointer.pointer == "hand") gameManager.HandOfPlayer(gameManager.TriggerPlayer());
+   //          if(pointer.pointer == "Deck") gameManager.DeckofPlayer(gameManager.TriggerPlayer());
+   //          if(pointer.pointer == "Field") gameManager.FieldOfPlayer(gameManager.TriggerPlayer());
+   //          if(pointer.pointer == "board") gameManager.CardsOnBoard();
+   //     }
+   //     else if(arg is Card card)
+   //     {
+   //      if(arg is Name ) card.name = value as string;
+   //      if(arg is Faction) card.faction = value as string;
+   //      if(arg is Type) card.tipo = value as string;
+   //      if(arg is PowerAsField) card.ogpower = Convert.ToInt32(value);
 
-       }
-    }
+   //     }
+   //  }
 
-    }
-    public object EvaluateVariableComp(VariableComp variableComp)
-    {
-        object last = null;
-        foreach(var arg in variableComp.args.Arguments)
-        {
-            // if(arg is FunctionDeclaration)
-            // {
-            //     last = (arg as FunctionDeclaration).GetValue(context,last);
-            // }
-            // else if(arg is Indexer)
-            // {
-            //     if(last is CardList)
-            //     {
-            //         List<Card> cards = (last as CardList).Cards;
-            //         Indexer indexer = arg as Indexer;
-            //         last = cards[indexer.index];
-            //     }
-            //     else
-            //     {
-            //         string[] range = last as string[];
-            //         Indexer indexer = arg as Indexer;
-            //         last = range[indexer.index];
-            //     }
-            // }
-         if(arg is Pointer)
-            {
-                Pointer pointer = arg as Pointer;
-                switch(pointer.pointer)
-                {
-                    case "Hand": last = gameManager.HandOfPlayer(gameManager.TriggerPlayer());break;
-                    case "Deck": last = gameManager.DeckofPlayer(gameManager.TriggerPlayer());break;
-                    case "Graveyard": last = gameManager.GraveyardOfPlayer(gameManager.TriggerPlayer());break;
-                    case "Field": last = gameManager.FieldOfPlayer(gameManager.TriggerPlayer());break;
-                    case "Board": last = gameManager.CardsOnBoard();break;
-                }
-            }
-            else
-            {
-                Card card = last as Card;
-                switch(arg)
-                {
-                    case Type: last = card.tipo;break;
-                    case Name: last = card.name;break;
-                    case Faction: last = card.faction;break;
-                    case PowerAsField: last = card.power;break;
-                    // case Range: last = card.range;break;
-                    // case Owner: last = card.Owner;break;
-                }
-            }
-        }
-        return last;
-    }
+   //  }
+   //  public object EvaluateVariableComp(VariableComp variableComp)
+   //  {
+   //      object last = null;
+   //      foreach(var arg in variableComp.args.Arguments)
+   //      {
+   //          // if(arg is FunctionDeclaration)
+   //          // {
+   //          //     last = (arg as FunctionDeclaration).GetValue(context,last);
+   //          // }
+   //          // else if(arg is Indexer)
+   //          // {
+   //          //     if(last is CardList)
+   //          //     {
+   //          //         List<Card> cards = (last as CardList).Cards;
+   //          //         Indexer indexer = arg as Indexer;
+   //          //         last = cards[indexer.index];
+   //          //     }
+   //          //     else
+   //          //     {
+   //          //         string[] range = last as string[];
+   //          //         Indexer indexer = arg as Indexer;
+   //          //         last = range[indexer.index];
+   //          //     }
+   //          // }
+   //       if(arg is Pointer)
+   //          {
+   //              Pointer pointer = arg as Pointer;
+   //              switch(pointer.pointer)
+   //              {
+   //                  case "Hand": last = gameManager.HandOfPlayer(gameManager.TriggerPlayer());break;
+   //                  case "Deck": last = gameManager.DeckofPlayer(gameManager.TriggerPlayer());break;
+   //                  case "Graveyard": last = gameManager.GraveyardOfPlayer(gameManager.TriggerPlayer());break;
+   //                  case "Field": last = gameManager.FieldOfPlayer(gameManager.TriggerPlayer());break;
+   //                  case "Board": last = gameManager.CardsOnBoard();break;
+   //              }
+   //          }
+   //          else
+   //          {
+   //              Card card = last as Card;
+   //              switch(arg)
+   //              {
+   //                  case Type: last = card.tipo;break;
+   //                  case Name: last = card.name;break;
+   //                  case Faction: last = card.faction;break;
+   //                  case PowerAsField: last = card.power;break;
+   //                  // case Range: last = card.range;break;
+   //                  // case Owner: last = card.Owner;break;
+   //              }
+   //          }
+   //      }
+   //      return last;
+   //  }
 }

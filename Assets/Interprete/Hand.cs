@@ -27,6 +27,7 @@ public class Hand : MonoBehaviour
     }
     public void Remove(Card card)
     {
+        UnityEngine.Debug.Log("removing card");
         foreach(Transform transform in hand.transform)
         {
             if(transform.gameObject.GetComponent<Card>()==card)

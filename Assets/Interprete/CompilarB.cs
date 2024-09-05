@@ -163,7 +163,7 @@ public class CompilarB : MonoBehaviour
                     CardDisplay cardDisplay = cardPrefab.GetComponent<CardDisplay>();
                     cardDisplay.card = cardPrueba;
                     Hand hand = PlayerField.GetComponent<Hand>();
-                    hand.Push(cardPrueba);
+                    hand.PushA(cardPrueba);
                     
                 }
                 else
@@ -246,7 +246,7 @@ public class CompilarB : MonoBehaviour
                     CardDisplay cardDisplay = cardPrefab.GetComponent<CardDisplay>();
                     cardDisplay.card = cardPrueba;
                     Hand hand = EnemyField.GetComponent<Hand>();
-                    hand.Push(cardPrueba);
+                    hand.PushA(cardPrueba);
                 }
                 
              }

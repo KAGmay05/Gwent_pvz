@@ -941,21 +941,97 @@ public class FunctionDeclaration : Statement
     {
         switch(FunctionName)
         {
-            case "TriggerPlayer": return gameManager.TriggerPlayer();
-            case "HandOfPlayer": if(Args.Arguments[0] is FunctionDeclaration) return gameManager.HandOfPlayer(Convert.ToInt32((Args.Arguments[0] as FunctionDeclaration).GetValue(semantic, gameManager,value)));
-            else return gameManager.HandOfPlayer(Convert.ToInt32((Args.Arguments[0] as Expression).Evaluate(semantic,gameManager)));
-            case "DeckOfPlayer": if(Args.Arguments[0] is FunctionDeclaration) return gameManager.DeckofPlayer(Convert.ToInt32((Args.Arguments[0] as FunctionDeclaration).GetValue(semantic, gameManager,value)));
-            else return gameManager.DeckofPlayer(Convert.ToInt32((Args.Arguments[0] as Expression).Evaluate(semantic,gameManager)));
-            case "GraveyardOfPlayer": if(Args.Arguments[0] is FunctionDeclaration) return gameManager.GraveyardOfPlayer(Convert.ToInt32((Args.Arguments[0] as FunctionDeclaration).GetValue(semantic, gameManager,value)));
-            else return gameManager.GraveyardOfPlayer(Convert.ToInt32((Args.Arguments[0] as Expression).Evaluate(semantic,gameManager)));
-            case "FieldOfPlayer": if(Args.Arguments[0] is FunctionDeclaration) return gameManager.FieldOfPlayer(Convert.ToInt32((Args.Arguments[0] as FunctionDeclaration).GetValue(semantic, gameManager,value)));
-            else return gameManager.FieldOfPlayer(Convert.ToInt32((Args.Arguments[0] as Expression).Evaluate(semantic,gameManager)));
-            // case "Find": (value as CardList).Find(Args.Arguments[0] as Predicate);return null;
-            // case "Push": (value as CardList).Push((Args.Arguments[0] as Expression).Evaluate(semantic,gameManager) as GameObject);return null;
-            // case "SendBottom": (value as CardList).SendBottom((Args.Arguments[0] as Expression).Evaluate(semantic,gameManager) as GameObject);return null;
-            // case "Pop": return (value as CardList).Pop();
-            // case "Remove": (value as CardList).Remove((Args.Arguments[0] as Expression).Evaluate(semantic,gameManager) as GameObject);return null;
-            // case "Shuffle": (value as CardList).Shuffle();return null; 
+            case "TriggerPlayer":
+             return gameManager.TriggerPlayer();
+            case "HandOfPlayer": 
+            if(Args.Arguments[0] is FunctionDeclaration) 
+            return gameManager.HandOfPlayer(Convert.ToInt32((Args.Arguments[0] as FunctionDeclaration).GetValue(semantic, gameManager,value)));
+            else 
+            return gameManager.HandOfPlayer(Convert.ToInt32((Args.Arguments[0] as Expression).Evaluate(semantic,gameManager)));
+            case "DeckOfPlayer":
+             if(Args.Arguments[0] is FunctionDeclaration) 
+             return gameManager.DeckofPlayer(Convert.ToInt32((Args.Arguments[0] as FunctionDeclaration).GetValue(semantic, gameManager,value)));
+            else 
+            return gameManager.DeckofPlayer(Convert.ToInt32((Args.Arguments[0] as Expression).Evaluate(semantic,gameManager)));
+            case "GraveyardOfPlayer": 
+            if(Args.Arguments[0] is FunctionDeclaration) 
+            return gameManager.GraveyardOfPlayer(Convert.ToInt32((Args.Arguments[0] as FunctionDeclaration).GetValue(semantic, gameManager,value)));
+            else 
+            return gameManager.GraveyardOfPlayer(Convert.ToInt32((Args.Arguments[0] as Expression).Evaluate(semantic,gameManager)));
+            case "FieldOfPlayer": 
+            if(Args.Arguments[0] is FunctionDeclaration) 
+            return gameManager.FieldOfPlayer(Convert.ToInt32((Args.Arguments[0] as FunctionDeclaration).GetValue(semantic, gameManager,value)));
+            else 
+            return gameManager.FieldOfPlayer(Convert.ToInt32((Args.Arguments[0] as Expression).Evaluate(semantic,gameManager)));
+            case "Find": return (value as Hand).Find(Args.Arguments[0] as Predicate, semantic, gameManager);
+            case "Push": 
+            
+                if(value is Hand hand)
+            {
+                hand.Push((Args.Arguments[0] as Expression).Evaluate(semantic,gameManager) as GameObject);
+                return null;
+            }
+            else if(value is Graveyard graveyard)
+            {
+            graveyard.Push((Args.Arguments[0] as Expression).Evaluate(semantic,gameManager) as GameObject);
+            return null;
+            }
+            else 
+            {
+                (value as Deck).Push((Args.Arguments[0] as Expression).Evaluate(semantic,gameManager) as GameObject);
+                return null;
+            }
+            case "SendBottom": 
+            if(value is Hand handS)
+            {
+                handS.SendBottom((Args.Arguments[0] as Expression).Evaluate(semantic,gameManager) as GameObject);
+                return null;
+            }
+            else if(value is Graveyard graveyardS)
+            {
+                graveyardS.SendBottom((Args.Arguments[0] as Expression).Evaluate(semantic,gameManager) as GameObject);
+                return null;
+            }
+            else
+            {
+                (value as Deck).SendBottom((Args.Arguments[0] as Expression).Evaluate(semantic,gameManager) as GameObject);
+                return null;
+            }
+             case "Pop": 
+             if(value is Hand handP)
+             return handP.Pop();
+             else if(value is Graveyard graveyardP)
+             return graveyardP.Pop();
+             else
+             return (value as Deck).Pop();
+            case "Remove":
+            if(value is Hand handR)
+            {
+             handR.Remove((Args.Arguments[0] as Expression).Evaluate(semantic,gameManager) as GameObject);
+             return null;
+            }
+            else if(value is Graveyard graveyardR)
+            {
+                graveyardR.Remove((Args.Arguments[0] as Expression).Evaluate(semantic,gameManager) as GameObject);
+                return null;
+            }
+            else
+             {
+                (value as Deck).Remove((Args.Arguments[0] as Expression).Evaluate(semantic,gameManager) as GameObject);
+                return null;
+             }
+             case "Shuffle":
+             if(value is Hand handB)
+              {
+                handB.Shuffle();
+                return null; 
+              }
+              else 
+              {
+                (value as Graveyard).Shuffle();
+                return null;
+              }
+              
             default: return null;
         }
     }

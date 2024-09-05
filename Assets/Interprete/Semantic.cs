@@ -148,6 +148,9 @@ public Dictionary<string, Variable.Type> variables = new Dictionary<string, Vari
     void CheckOAEffect(OAEffect oaEffect)
     {
      PushScope();
+     if(effects.ContainsKey(oaEffect.Name))
+     {
+     if(effects[oaEffect.Name].Params == null ) Debug.Log("esta vacia la lista de efecto");
      if(effects[oaEffect.Name].Params != null)
      {
         List<Assignment> assignments = oaEffect.Assingments;
@@ -190,8 +193,9 @@ public Dictionary<string, Variable.Type> variables = new Dictionary<string, Vari
         }
      }
 
-
      PopScope();
+     }
+     else Errors.Add("effect not defined");
     }
     void CheckSelector(Selector selector)
     {

@@ -109,15 +109,15 @@ public Dictionary<string, Variable.Type> variables = new Dictionary<string, Vari
             CheckVariable(variableComp);
             if(variableComp.type != Variable.Type.INT)
             {
-                Errors.Add("Power must be a number");
+                Errors.Add("Variable must be a number");
             }
         }
         else if(variable.type != Variable.Type.INT)
         {
-            Errors.Add("Power must be a number");
+            Errors.Add("Variable must be a number");
         }
        }
-       else Errors.Add("Power must be a number");
+       else Errors.Add("Variable must be a number");
     }
     void CheckCardType(Expression type)
     {
@@ -405,25 +405,26 @@ public Dictionary<string, Variable.Type> variables = new Dictionary<string, Vari
              CheckVariable(variable);
             }
         }
-        // for(int i = 0; i<variableComp.args.Arguments.Count(); i++)
-        // {
-        //     var arg = variableComp.args.Arguments[i];
-        //     foreach(var node in variableComp.args.Arguments)
-        //     Debug.Log($"en la lista esta{node} y solo eso ");
-        //     if(variableComp.args.Arguments[i] is FunctionDeclaration function)
-        //     {
-        //         Debug.Log("function");
-        //         CheckFunction(function);
-        //     }
-        //     else if(variableComp.args.Arguments[i] is PowerAsField powerAsField)
-        //     {
-        //         // CheckAssignement()
-        //         // Debug.Log($"{variableComp.} estpo es poweras field");
+        //estefor estaba comentado antes
+        for(int i = 0; i<variableComp.args.Arguments.Count(); i++)
+        {
+            var arg = variableComp.args.Arguments[i];
+            foreach(var node in variableComp.args.Arguments)
+            Debug.Log($"en la lista esta{node} y solo eso ");
+            if(variableComp.args.Arguments[i] is FunctionDeclaration function)
+            {
+                Debug.Log("function");
+                CheckFunction(function);
+            }
+            else if(variableComp.args.Arguments[i] is PowerAsField powerAsField)
+            {
+                // CheckAssignement()
+                // Debug.Log($"{variableComp.} estpo es poweras field");
                 
-        //     }
-        //     else 
-        //     Debug.Log("no entro");
-        // }
+            }
+            else 
+            Debug.Log("no entro");
+        }
     }
  }
  public void CheckStatementBlock(StatementBlock statementBlock)
@@ -491,6 +492,7 @@ public Dictionary<string, Variable.Type> variables = new Dictionary<string, Vari
         }
     }
     Debug.Log(function.FunctionName);
+    if(function.FunctionName != "Pop" && function.FunctionName != "Shuffle" && function.FunctionName != "Push" && function.FunctionName != "SendBottom"&& function.FunctionName!="Find"&&function.FunctionName!="Remove");
     if(function.FunctionName == "Pop"|| function.FunctionName == "Shuffle")
     {
      Debug.Log("entro a function pop");
@@ -518,6 +520,15 @@ public Dictionary<string, Variable.Type> variables = new Dictionary<string, Vari
     return variable.type;
     else if(expr is ExpressionGroup expressionGroup)
     return TypeExpr(expressionGroup.Exp);
+    // else if (expr is Binary)
+    // {
+    //     Binary bin = expr as Binary;
+    //     if (bin.Operators == Token.tokenType.PLUS)
+    //     {
+    //         if (TypeExpr(bin.Left) == TypeExpr(bin.Right)) return variable.Type.INT;
+    //         else Debug.Log("ESTAMAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAL");
+    //     }
+    // }
     Errors.Add("Invalid expression type");
     return Variable.Type.NULL;
 }

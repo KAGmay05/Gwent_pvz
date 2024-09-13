@@ -15,7 +15,10 @@ public class Parser : MonoBehaviour
     }
     public Node Parse()
     {
-        Program Program = new Program();
+        try
+        {
+            Program Program = new Program();
+      
         while(!IsAtEnd())
         {
             if(Match(TokenType.CARD))
@@ -36,6 +39,11 @@ public class Parser : MonoBehaviour
             }
         }
         return Program;
+        }
+        catch{
+            Errors.Add("Parser failure");
+            return default;
+        }
     }
 
     CardI ParseCard()
@@ -322,7 +330,7 @@ public class Parser : MonoBehaviour
                     }
                     else if(System.Convert.ToString(Peek().Literal) == "board")
                     {
-                         Debug.Log("en el if del delectr");
+                         Debug.Log("en el if del selector");
                          source = Advance().Lexeme;
                          source = "board";
                          Debug.Log($"{source} es lo q hay en sorce");
@@ -486,6 +494,7 @@ public class Parser : MonoBehaviour
     Variable ParseVariable()
     {
         Variable variable = new Variable(Advance());
+        bool error = false;
         if(Check(TokenType.DOT))
         {
             VariableComp variableComp = new VariableComp(variable.Token);
@@ -540,14 +549,22 @@ public class Parser : MonoBehaviour
                     }
                     else
                     {
-                        //Error
+                        Errors.Add("Invalid field in varComp");
+                        error = true;
                     }
                 }
             }
-            variable = variableComp;
+            if(error== false)
+            {
+                variable = variableComp;
             variable.type = varType;
+            }
         }
+        if(error== false)
         return variable;
+        else 
+        return null;
+        
     }
 
     StatementBlock ParseStmsBlock()
@@ -669,11 +686,18 @@ public class Parser : MonoBehaviour
             Consume(TokenType.COLON,"Expected ':' after parameter");
             if(Check(TokenType.STRINGTYPE)||Check(TokenType.NUMBERTYPE)||Check(TokenType.BOOLTYPE))
             {
-                variable.TypeParam(Advance().Type);
-                variables.Arguments.Add(variable);
-                if(!Check(TokenType.RIGHT_BRACE))
+                try
                 {
-                    Consume(TokenType.COMMA,"Expected ','");
+                    variable.TypeParam(Advance().Type);
+                    variables.Arguments.Add(variable);
+                    if(!Check(TokenType.RIGHT_BRACE))
+                    {
+                        Consume(TokenType.COMMA,"Expected ','");
+                    }
+                }
+                catch
+                {
+                    if(variable is null) Debug.Log("Variable is null");
                 }
             }
             else
